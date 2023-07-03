@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-04-14 16:29:14.813656",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "novaposhta",
+  "carier",
+  "carier_name",
+  "api_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "novaposhta",
+   "fieldtype": "Data",
+   "label": "Name",
+   "options": "NovaPoshta"
+  },
+  {
+   "fieldname": "carier",
+   "fieldtype": "Data",
+   "label": "Provider Type"
+  },
+  {
+   "fieldname": "carier_name",
+   "fieldtype": "Data",
+   "label": "Carier name",
+   "options": "NovaPoshta"
+  },
+  {
+   "fieldname": "api_key",
+   "fieldtype": "Data",
+   "label": "API Key",
+   "options": "https://api.novaposhta.ua/v2.0/json/"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-04-19 13:41:09.464623",
+ "modified_by": "Administrator",
+ "module": "ERPNext Shipping",
+ "name": "Shipping Providers",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

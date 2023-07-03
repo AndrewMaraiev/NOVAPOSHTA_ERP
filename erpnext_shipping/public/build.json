@@ -1,0 +1,4 @@
+{
+	"js/shipment.min.js": [
+		"public/js/shipment_service_selector.html"]
+}

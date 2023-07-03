@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-04-14 16:56:25.184647",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "charge_name",
+  "shipping_rule",
+  "amount",
+  "currency"
+ ],
+ "fields": [
+  {
+   "fieldname": "charge_name",
+   "fieldtype": "Data",
+   "label": "Charge Name"
+  },
+  {
+   "fieldname": "shipping_rule",
+   "fieldtype": "Data",
+   "label": "Shipping Rule"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Data",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-04-14 16:56:25.184647",
+ "modified_by": "Administrator",
+ "module": "ERPNext Shipping",
+ "name": "Shipping Rule Charge",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
