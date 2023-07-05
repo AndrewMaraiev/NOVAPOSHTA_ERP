@@ -38,9 +38,7 @@ class NovaPoshtaUtils:
      
         
     def get_available_services(self, **kwargs):
-        print('+'*100)
         print("get_available_services")
-        print('+'*100)
         headers = {"content-type": "application/json"}
         kwargs["modelName"] = "InternetDocument"
         kwargs["calledMethod"] = "getDocumentPrice"
@@ -63,7 +61,6 @@ class NovaPoshtaUtils:
             city=pickup_address.city,
             title=pickup_address.address_title,
         )["data"][0]
-        pprint(pickup_warehouse)
         delivery_warehouse = self.get_warehouse_ref(
             city=delivery_address.city,
             title=delivery_address.address_title,
@@ -77,9 +74,9 @@ class NovaPoshtaUtils:
         width = shipment_parcel[0].get("width")
         height = shipment_parcel[0].get("height")
         VolumeGeneral = (length * width * height) / 4000
-        
+          
         print(weight)
-        print(VolumeGeneral)   
+        print(VolumeGeneral)  
              
         delivery_price_data = self.calculate_delivery_price(
             city_sender=pickup_warehouse["SettlementRef"],
@@ -92,7 +89,6 @@ class NovaPoshtaUtils:
         
         data = delivery_price_data.get("data", [])
         pprint(delivery_price_data)
-        print('*'*100)
 
         if len(data) == 0:
             return []
@@ -133,10 +129,6 @@ class NovaPoshtaUtils:
     
     
     def calculate_delivery_price(self, city_sender, city_recipient, weight, cost, seats_amount = '1', pack_count = '1'):
-        print('*'*100)
-        print("calculate_delivery_price")
-        print("_"*100)
-        print(weight)
         body = {
             "apiKey": self.api_key,
             "modelName": "InternetDocument",
@@ -157,7 +149,6 @@ class NovaPoshtaUtils:
             }
         }
         # response = post(self.api_endpoint, json=body)
-        # pprint(body)
         return post(self.api_endpoint, json=body).json()
     
     def get_warehouse_ref(self, city, title):
@@ -205,6 +196,7 @@ class NovaPoshtaUtils:
         delivery_contact=None
     
     ):
+        
         pickup_address_doc = frappe.get_doc("Address", pickup_address)
         pickup_city_ref = self.get_city_ref(pickup_address_doc.city)
         pickup_address_warehouse = self.get_warehouse_ref(pickup_address_doc.city, pickup_address_doc.address_title)
@@ -239,7 +231,7 @@ class NovaPoshtaUtils:
             }
         }).json()
         delivery_counterparty_ref = recipient['data'][0]['Ref']
-        print(delivery_counterparty_ref)
+        print(delivery_counterparty_ref, )
 
         def get_counterparty_contacts(cp_ref):
             result = post(self.api_endpoint, json={
@@ -324,10 +316,8 @@ class NovaPoshtaUtils:
             if not result:
                 print('Failed to create recipient contact')
                 raise Exception("Failed to create recipient contact")
-        print('AAAAAAAAAAAA')
         recipient_contact_person_ref = recipient_contact['Ref']
         recipient_contact_person_phone = recipient_contact['Phones']
-        
         
         def create_express_waybill(
                 city_sender_ref,
@@ -340,7 +330,8 @@ class NovaPoshtaUtils:
                 recipient_address_ref,
                 recipient_contact_ref,
                 recipient_contact_phone,
-                weight
+                weight,
+                volume_general
         ):  
     
             result = post(self.api_endpoint, json={
@@ -351,8 +342,8 @@ class NovaPoshtaUtils:
                     "PayerType": "Recipient",
                     "PaymentMethod": "Cash",
                     "CargoType": "Cargo",
-                    "VolumeGeneral": "0.01",
-                    "Weight": weight or frappe.get_doc('Shipment Parcel', shipment_parcel).weight,
+                    "VolumeGeneral": '0',
+                    "Weight": weight,
                     "ServiceType": "WarehouseWarehouse",
                     "SeatsAmount": "1",
                     "Description": "Додатковий опис відправлення",
@@ -370,7 +361,19 @@ class NovaPoshtaUtils:
                 }
             }).json()
             return result
+        
         print('Create waybill')
+        print(shipment_parcel)
+        
+        length = shipment_parcel.get("length")
+        print('asfafadfadfa')
+        
+        width = shipment_parcel.get("width")
+        height = shipment_parcel.get("height")
+        print('asfafadfadfa')
+        
+        VolumeGeneral = (length * width * height) / 4000
+        
         
         waybill = create_express_waybill(
             city_sender_ref = pickup_city_ref, 
@@ -383,15 +386,15 @@ class NovaPoshtaUtils:
             recipient_address_ref = delivery_address_warehouse_ref,
             recipient_contact_ref = recipient_contact_person_ref,
             recipient_contact_phone = recipient_contact_person_phone,
-            weight = 'weight' or frappe.get_doc('Shipment Parcel', shipment_parcel).weight
+            weight=shipment_parcel.get("weight"),
+            volume_general=VolumeGeneral
 
         )
+        print(waybill)
 
         waybill_ref = waybill['data'][0]['Ref']
         waybill_number = waybill['data'][0]['IntDocNumber']
-        print('AAAAAAAAAAAA')
         print(waybill_ref)
-        print('BBBBBBBBBBBB')
         print(waybill_number)
         
         print("Waybill created")
