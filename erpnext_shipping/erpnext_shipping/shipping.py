@@ -193,7 +193,8 @@ def create_shipment(shipment, pickup_from_type, delivery_to_type, pickup_address
     if shipment_info is None:
         frappe.msgprint('Failed to create shipment for NovaPoshta')
     else:
-        frappe.db.set_value('Shipment', shipment, 'shipment_id', shipment_info)
+        frappe.db.set_value('Shipment', shipment, 'shipment_id', shipment_info.get('waybill_number'))
+        frappe.db.set_value('Shipment', shipment, 'waybill_ref', shipment_info.get('waybill_ref'))
         frappe.db.set_value('Shipment', shipment, 'status', 'Booked')
         frappe.msgprint('Shipment created for NovaPoshta')
         

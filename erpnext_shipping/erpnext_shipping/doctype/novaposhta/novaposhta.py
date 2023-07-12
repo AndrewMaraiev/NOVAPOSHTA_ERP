@@ -4,23 +4,34 @@ import requests
 from pprint import pprint
 from time import sleep
 from frappe import _
+from frappe.utils.pdf import get_pdf
 from frappe.model.document import Document
 from frappe.utils import flt
 from frappe.utils.password import get_decrypted_password
 from requests import post
+from . import novaposhta
+from werkzeug.wrappers import Response
+from werkzeug.wsgi import wrap_file
+
+from frappe.utils.response import build_response
+
+import base64
+
+
 
 import frappe
-from erpnext.stock.doctype import shipment, shipment_parcel
-from erpnext_shipping.erpnext_shipping.doctype.novaposhta.np_client import ExpressWaybill, NovaPoshtaApi
+from erpnext.stock.doctype import shipment as shipment_doctype, shipment_parcel as shipment_parcel_doctype
+from erpnext_shipping.erpnext_shipping.doctype.novaposhta.np_client import NovaPoshtaApi
 from erpnext_shipping.erpnext_shipping.doctype.novaposhta_settings.novaposhta_settings import NovaPoshtaSettings
 from erpnext_shipping.erpnext_shipping.utils import show_error_alert
+from frappe import whitelist
+
 
 NOVAPOSHTA_PROVIDER = "NovaPoshta"
 
 
 class NovaPoshtaUtils:
     def __init__(self, api_key: str = None):
-        
         self.api_key = api_key or get_decrypted_password(
             "NovaPoshta Settings", "NovaPoshta Settings", "api_key", raise_exception=False
         )
@@ -35,8 +46,7 @@ class NovaPoshtaUtils:
                 _("Please enable NovaPoshta Integration in {0}".format(link)),
                 title=_("Mandatory"),
             )
-     
-        
+            
     def get_available_services(self, **kwargs):
         print("get_available_services")
         headers = {"content-type": "application/json"}
@@ -48,14 +58,6 @@ class NovaPoshtaUtils:
         pprint(form.get("Weight"))
         pickup_address = kwargs.get("pickup_address")
         delivery_address = kwargs.get("delivery_address")
-        if "Відділення" in pickup_address.address_title and "№" not in pickup_address.address_title:
-            pickup_address.address_title = pickup_address.address_title.replace(
-            "Відділення ", "Відділення №"
-        )
-        if "Відділення" in delivery_address.address_title and "№" not in delivery_address.address_title:
-            delivery_address.address_title = delivery_address.address_title.replace(
-            "Відділення ", "Відділення №"
-        )
         
         pickup_warehouse = self.get_warehouse_ref(
             city=pickup_address.city,
@@ -66,6 +68,14 @@ class NovaPoshtaUtils:
             title=delivery_address.address_title,
         )["data"][0]
 
+        if "Відділення" in pickup_address.address_title and "№" not in pickup_address.address_title:
+            pickup_address.address_title = pickup_address.address_title.replace(
+            "Відділення ", "Відділення №"
+        )
+        if "Відділення" in delivery_address.address_title and "№" not in delivery_address.address_title:
+            delivery_address.address_title = delivery_address.address_title.replace(
+            "Відділення ", "Відділення №"
+        )
         
         # Access the list elements directly without using json.loads()
         shipment_parcel = kwargs["shipment_parcel"]
@@ -101,7 +111,6 @@ class NovaPoshtaUtils:
         service_data.currency = 'UAH'
         
         return [service_data]
-    
 
     def get_novaposhta_shipping_rates(self, args):
         novaposhta = NovaPoshtaUtils()
@@ -126,9 +135,8 @@ class NovaPoshtaUtils:
             cost_of_goods=flt(cost_of_goods)
         )
         return shipping_rates
-    
-    
-    def calculate_delivery_price(self, city_sender, city_recipient, weight, cost, seats_amount = '1', pack_count = '1'):
+
+    def calculate_delivery_price(self, city_sender, city_recipient, weight, cost, seats_amount='1', pack_count='1'):
         body = {
             "apiKey": self.api_key,
             "modelName": "InternetDocument",
@@ -150,7 +158,7 @@ class NovaPoshtaUtils:
         }
         # response = post(self.api_endpoint, json=body)
         return post(self.api_endpoint, json=body).json()
-    
+
     def get_warehouse_ref(self, city, title):
         body = {
             "apiKey": self.api_key,
@@ -166,7 +174,7 @@ class NovaPoshtaUtils:
         }
         response = post(self.api_endpoint, json=body)
         return response.json()
-    
+
     def get_city_ref(self, city):
         body = {
             "apiKey": self.api_key,
@@ -182,7 +190,7 @@ class NovaPoshtaUtils:
         data = response.json()
         data = data["data"]
         return data[0]["Ref"]
-    
+
     def create_shipment(
         self,
         pickup_address,
@@ -194,9 +202,7 @@ class NovaPoshtaUtils:
         service_info='WarehouseWarehouse',
         pickup_contact=None,
         delivery_contact=None
-    
     ):
-        
         pickup_address_doc = frappe.get_doc("Address", pickup_address)
         pickup_city_ref = self.get_city_ref(pickup_address_doc.city)
         pickup_address_warehouse = self.get_warehouse_ref(pickup_address_doc.city, pickup_address_doc.address_title)
@@ -366,12 +372,8 @@ class NovaPoshtaUtils:
         print(shipment_parcel)
         
         length = shipment_parcel.get("length")
-        print('asfafadfadfa')
-        
         width = shipment_parcel.get("width")
-        height = shipment_parcel.get("height")
-        print('asfafadfadfa')
-        
+        height = shipment_parcel.get("height")        
         VolumeGeneral = (length * width * height) / 4000
         
         
@@ -399,8 +401,46 @@ class NovaPoshtaUtils:
         
         print("Waybill created")
         if waybill_number:
-            return waybill_number
-        
+            return {'waybill_number': waybill_number, 'waybill_ref': waybill_ref}
         raise Exception("Failed to create waybill")
+    
+@frappe.whitelist()      
+def get_label(waybill_number):
+    api_key='ed0b9e715fefe9ba6b2a3ec7cce89a1a'
+    api_endpoint = "https://my.novaposhta.ua/orders/printDocument"
 
+    # Визначення URL для друку маркування у форматі PDF
+    pdf_print_url = f"{api_endpoint}/orders[]/{waybill_number}/type/pdf/apiKey/{api_key}"
+    html_print_url = f"{api_endpoint}/orders[]/{waybill_number}/type/html/apiKey/{api_key}"
+    # Виконання запиту на отримання URL для друку маркування
+    response = requests.get(html_print_url)
+    
+    # file_data = get_pdf(response.text)
+    # print(file_data)
+    
+    # file = frappe.new_doc('File')
+    # file.file_name = 'tmp.pdf'
+    # file.save_file(content=file_data, overwrite=True)
+    # file.save_file_on_filesystem()
+    # file.save()
+    # content = base64.b64decode(response.content)
+    # print(content)
+    
+    if response.status_code == 200:
+        # frappe.response.filename = 'file.pdf'
+        # frappe.response.filecontent = file_data
+        # frappe.response.type = "download"
+        # frappe.response.display_content_as = "attachment"
+        # response = build_response("pdf")
         
+        return response.text
+    else:
+        raise Exception("Failed to retrieve label URL")
+
+    return 
+
+waybill_number = "20450741136628"  # Замініть на номер своєї накладної
+label_url = get_label(waybill_number)
+# pprint(get_pdf(label_url))
+
+

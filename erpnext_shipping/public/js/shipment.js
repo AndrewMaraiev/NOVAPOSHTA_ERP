@@ -158,7 +158,34 @@ frappe.ui.form.on('Shipment', {
 	},
 
 	print_shipping_label: function(frm) {
-		// Code for printing shipping label
+		var shipment_id = frm.doc.shipment_id;
+		if (shipment_id) {
+			// window.open("/api/method/erpnext_shipping.erpnext_shipping.doctype.novaposhta.novaposhta.get_label");
+
+			frappe.call({
+				method: "erpnext_shipping.erpnext_shipping.doctype.novaposhta.novaposhta.get_label",
+				args: {
+					waybill_number: shipment_id,
+					ref: frm.doc
+				},
+				callback: function(response) {
+					if (response) {
+						var label_url = response.message;
+						console.log(response)
+						// var printWindow = window.open(label_url, "_blank");
+						var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+						mywindow.document.write(label_url)
+						mywindow.onload = function() {
+							mywindow.print();
+						};
+					} else {
+						frappe.msgprint("No label URL found");
+					}
+				}
+			});
+		} else {
+			frappe.msgprint("Shipment ID not found");
+		}
 	},
 
 	update_tracking: function(frm, service_provider, shipment_id) {
