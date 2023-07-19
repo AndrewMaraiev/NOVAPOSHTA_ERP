@@ -1,23 +1,34 @@
 ## ERPNext Shipping
 
 A Shipping Integration for ERPNext with various platforms. Platforms integrated in this app are:
-- [Packlink](https://www.packlink.com/en-GB/)
+- [Nova Poshta](https://novaposhta.ua/)
 - [LetMeShip](https://www.letmeship.com/en/)
 - [SendCloud](https://www.sendcloud.com/home-new/)
 
 ## Features
-- Creation of shipment to a carrier service (e.g. FedEx, UPS) via LetMeShip, Packlink, and SendCloud. 
+- Creation of shipment to a carrier service (e.g. FedEx, UPS) via LetMeShip, Nova Poshta, and SendCloud. 
 - Compare shipping rates. 
 - Printing the shipping label is also made available within the Shipment doctype.
 - Templates for the parcel dimensions.
 - Shipment tracking.
+
+
+.1 Nova Poshta API
+To use the delivery services of Nova Poshta, you first need to obtain an API key:
+
+Register on the Nova Poshta website and obtain an API key.
+In the ERPNext system, go to the integration settings.
+Find the section for Nova Poshta API.
+Insert the obtained API key into the "API Key" field.
+Check the "Enabled" field and save the settings.
+Now, after successful integration with Nova Poshta, you will be able to utilize their delivery services for comparing rates, generating labels, and tracking shipment statuses in the ERPNext system.
 
 ## Setup
 For the compare shipping rates feature to work as expected, you need to generate an API key from your service provider. Service providers have their own specific doctypes similar to those from the `Integrations`. They can be enabled or disabled depending on your needs.
 
 ![LetMeShip 2020-08-05 09-54-28](https://user-images.githubusercontent.com/17470909/89377411-500c4f80-d724-11ea-8fe5-b11fec2a5c27.png)
 
-![Packlink 2020-08-05 09-53-47](https://user-images.githubusercontent.com/17470909/89377423-56023080-d724-11ea-8396-fb9f60a0d581.png)
+
 
 ### Fetch Shipping Rates
 ![core2](https://user-images.githubusercontent.com/17470909/89377460-70d4a500-d724-11ea-8550-a2813b936651.gif)
