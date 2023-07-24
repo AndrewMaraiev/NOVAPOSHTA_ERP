@@ -403,44 +403,24 @@ class NovaPoshtaUtils:
         if waybill_number:
             return {'waybill_number': waybill_number, 'waybill_ref': waybill_ref}
         raise Exception("Failed to create waybill")
-    
+         
 @frappe.whitelist()      
 def get_label(waybill_number):
-    api_key='ed0b9e715fefe9ba6b2a3ec7cce89a1a'
-    api_endpoint = "https://my.novaposhta.ua/orders/printDocument"
+    api_key = 'ed0b9e715fefe9ba6b2a3ec7cce89a1a'
+    api_endpoint = 'https://my.novaposhta.ua/orders/printMarking100x100'
 
-    # Визначення URL для друку маркування у форматі PDF
-    pdf_print_url = f"{api_endpoint}/orders[]/{waybill_number}/type/pdf/apiKey/{api_key}"
-    html_print_url = f"{api_endpoint}/orders[]/{waybill_number}/type/html/apiKey/{api_key}"
-    # Виконання запиту на отримання URL для друку маркування
-    response = requests.get(html_print_url)
-    
-    # file_data = get_pdf(response.text)
-    # print(file_data)
-    
-    # file = frappe.new_doc('File')
-    # file.file_name = 'tmp.pdf'
-    # file.save_file(content=file_data, overwrite=True)
-    # file.save_file_on_filesystem()
-    # file.save()
-    # content = base64.b64decode(response.content)
-    # print(content)
-    
+    # Визначення URL для друку маркування у форматі HTML для принтера Zebra
+    html_print_url = f'{api_endpoint}/orders/printMarking100x100/orders[]/{waybill_number}/type/html/apiKey/{api_key}/zebra'
+
+    # Виконання запиту на отримання HTML-файлу з маркуванням
+    response = requests.post(html_print_url)
+
     if response.status_code == 200:
-        # frappe.response.filename = 'file.pdf'
-        # frappe.response.filecontent = file_data
-        # frappe.response.type = "download"
-        # frappe.response.display_content_as = "attachment"
-        # response = build_response("pdf")
-        
+        # Повернення HTML-файлу з маркуванням
         return response.text
     else:
-        raise Exception("Failed to retrieve label URL")
+        # Якщо отримання HTML не вдалося, викидаємо виняток
+        raise Exception('Failed to retrieve label HTML')
 
-    return 
-
-waybill_number = "20450741136628"  # Замініть на номер своєї накладної
-label_url = get_label(waybill_number)
-# pprint(get_pdf(label_url))
 
 
