@@ -29,6 +29,9 @@ from frappe import whitelist
 
 NOVAPOSHTA_PROVIDER = "NovaPoshta"
 
+class NovaPoshta(Document):
+    pass
+
 
 class NovaPoshtaUtils:
     def __init__(self, api_key: str = None):
