@@ -166,14 +166,14 @@ frappe.ui.form.on('Shipment', {
 				method: "erpnext_shipping.erpnext_shipping.doctype.novaposhta.novaposhta.get_label",
 				args: {
 					waybill_number: shipment_id,
-					ref: frm.doc
+					ref: frm.d
 				},
 				callback: function(response) {
 					if (response) {
 						var label_url = response.message;
 						console.log(response)
 						// var printWindow = window.open(label_url, "_blank");
-						var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+						var mywindow = window.open('', 'PRINT', 'height=100,width=100');
 						mywindow.document.write(label_url)
 						mywindow.onload = function() {
 							mywindow.print();
@@ -188,10 +188,93 @@ frappe.ui.form.on('Shipment', {
 		}
 	},
 
-	update_tracking: function(frm, service_provider, shipment_id) {
-		// Code for updating tracking
+	update_tracking: function(frm, service_provider, waybill) {
+		// Check if the waybill and service provider are provided
+		if (!waybill || !service_provider) {
+			frappe.msgprint("Waybill or Service Provider not provided.");
+			return;
+		}
+	
+		// Implement the code to fetch tracking information using the NovaPoshtaUtils API
+		frappe.call({
+			method: "erpnext_shipping.erpnext_shipping.doctype.novaposhta.novaposhta.get_tracking_data",
+			args: {
+				api_key: 'ed0b9e715fefe9ba6b2a3ec7cce89a1a', // Replace with your Nova Poshta API key
+				waybill_number: waybill,
+				delivery_contact: frm.doc.delivery_contact_name
+			},
+			callback: function(response) {
+				if (response && response.message && response.message.data && response.message.data.length > 0) {
+					const trackingData = response.message.data[0];
+					// Update the tracking information in the Shipment document
+					frm.doc.tracking_status = trackingData.StatusCode;
+					frm.doc.tracking_status_description = getTrackingStatusDescription(trackingData.StatusCode.toString());
+	
+					// Optionally, you can also update other relevant information as needed
+					frm.doc.actual_delivery_date = trackingData.ActualDeliveryDate;
+					frm.doc.city_recipient = trackingData.CityRecipient;
+					frm.doc.city_sender = trackingData.CitySender;
+	
+					// Save the updated document
+					frm.save();
+					// frappe.msgprint("Tracking information updated successfully.");
+					frappe.msgprint(getTrackingStatusDescription(trackingData.StatusCode));
+				} else {
+					frappe.msgprint("Failed to update tracking information.");
+				}
+			}
+		});
 	}
-});
+	});
+
+function getTrackingStatusDescription(statusCode) {
+    switch (statusCode) {
+        case '1':
+            return 'Відправник самостійно створив цю накладну, але ще не надав до відправки';
+        case '2':
+            return 'Видалено';
+        case '3':
+            return 'Номер не знайдено';
+        case '4':
+            return 'Відправлення у місті ХХXХ. (Статус для межобластных отправлений)';
+        case '41':
+            return 'Відправлення у місті ХХXХ. (Статус для услуг локал стандарт и локал экспресс - доставка в пределах города)';
+        case '5':
+            return 'Відправлення прямує до міста YYYY';
+        case '6':
+            return 'Відправлення у місті YYYY, орієнтовна доставка до ВІДДІЛЕННЯ-XXX dd-mm. Очікуйте додаткове повідомлення про прибуття';
+        case '7':
+            return 'Прибув на відділення';
+        case '8':
+            return 'Прибув на відділення (завантажено в Поштомат)';
+        case '9':
+            return 'Відправлення отримано';
+        case '10':
+            return 'Відправлення отримано %DateReceived%. Протягом доби ви одержите SMS-повідомлення про надходження грошового переказу та зможете отримати його в касі відділення «Нова пошта»';
+        case '11':
+            return 'Відправлення отримано %DateReceived%. Грошовий переказ видано одержувачу.';
+        case '12':
+            return 'Нова Пошта комплектує ваше відправлення';
+        case '101':
+            return 'На шляху до одержувача';
+        case '102':
+            return 'Відмова від отримання (Відправником створено замовлення на повернення)';
+        case '103':
+            return 'Відмова одержувача (отримувач відмовився від відправлення)';
+        case '104':
+            return 'Змінено адресу';
+        case '105':
+            return 'Припинено зберігання';
+        case '106':
+            return 'Одержано і створено ЄН зворотньої доставки';
+        case '111':
+            return 'Невдала спроба доставки через відсутність Одержувача на адресі або зв\'язку з ним';
+        case '112':
+            return 'Дата доставки перенесена Одержувачем';
+        default:
+            return 'Невідомий статус';
+    }
+}
 
 function select_from_available_services(frm, available_services) {
 	var headers = [ __("Service Provider"), __("Parcel Service"), __("Parcel Service Type"), __("Price"), "" ];
