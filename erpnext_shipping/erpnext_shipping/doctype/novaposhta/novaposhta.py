@@ -422,5 +422,29 @@ def get_label(waybill_number):
         # Якщо отримання HTML не вдалося, викидаємо виняток
         raise Exception('Failed to retrieve label HTML')
 
+@frappe.whitelist() 
+def get_tracking_data(api_key, waybill_number, delivery_contact):
+    api_endpoint = "https://api.novaposhta.ua/v2.0/json/"
 
+    body = {
+        "apiKey": api_key,
+        "modelName": "TrackingDocument",
+        "calledMethod": "getStatusDocuments",
+        "methodProperties": {
+            "Documents": [
+                {
+                    "DocumentNumber": waybill_number,
+                    "Phone": delivery_contact
+                }
+            ]
+        }
+    }
+
+    response = requests.post(api_endpoint, json=body)
+    pprint(requests)
+
+    if response.status_code != 200:
+        raise Exception(f"Error getting tracking data for {waybill_number}: {response.status_code}")
+
+    return response.json()
 
