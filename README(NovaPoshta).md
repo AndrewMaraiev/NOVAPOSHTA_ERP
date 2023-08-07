@@ -2,7 +2,7 @@
 
 NOVAPOSHTA_ERP is a comprehensive shipping integration for ERPNext that enables seamless logistics and shipping operations using the Nova Poshta shipping service. This integration provides features such as shipment creation, rate comparison, label generation, shipment tracking, and warehouse management. The integration supports multiple platforms, including Nova Poshta, LetMeShip, and SendCloud.
 
-![Nova Poshta Logo](https://user-images.githubusercontent.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/np.png)
+![Nova Poshta Logo](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/np.png)
 
 ## Features
 
