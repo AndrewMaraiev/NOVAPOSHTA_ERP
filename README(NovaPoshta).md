@@ -49,7 +49,9 @@ NOVAPOSHTA_ERP is a comprehensive shipping integration for ERPNext that enables 
 - **Tracking status**:
   Click the "Update Tracking" button to view ` tracking status of shipment.
 
-  ![Print label](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/label%20'zebra'.png)
+  ![Tracking status](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/status.png)
+  ![Tracking status](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/status%20done.png)
+  
 ## License
 
 This project is licensed under the MIT License.
