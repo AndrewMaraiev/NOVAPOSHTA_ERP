@@ -40,7 +40,7 @@ class NovaPoshtaUtils:
         )
         self.enabled = frappe.db.get_value("NovaPoshta", "NovaPoshta", "enabled")
         self.api_endpoint = "https://api.novaposhta.ua/v2.0/json/"
-        self.api = NovaPoshtaApi(api_key='ed0b9e715fefe9ba6b2a3ec7cce89a1a')
+        self.api = NovaPoshtaApi(api_key='YOUR API KEY')
         if not self.enabled:
             link = frappe.utils.get_link_to_form(
                 "NovaPoshta", "NovaPoshta", frappe.bold("NovaPoshta Settings")
@@ -409,7 +409,7 @@ class NovaPoshtaUtils:
          
 @frappe.whitelist()      
 def get_label(waybill_number):
-    api_key = 'ed0b9e715fefe9ba6b2a3ec7cce89a1a'
+    api_key = 'YOUR API KEY'
     api_endpoint = 'https://my.novaposhta.ua/orders/printMarking100x100'
 
     # Визначення URL для друку маркування у форматі HTML для принтера Zebra
