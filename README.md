@@ -106,7 +106,7 @@ We appreciate your efforts in improving NOVAPOSHTA_ERP!
 
 ## Credits
 
-This integration is developed and maintained by [Your Company Name]. We thank the contributors([Vladykart](https://github.com/Vladykart) and [NazikXY](https://github.com/NazikXY)) and the community for their valuable input.
+This integration is developed and maintained by [iKrok](https://github.com/ikrokdev). We thank the contributors([Vladykart](https://github.com/Vladykart) and [NazikXY](https://github.com/NazikXY)) and the community for their valuable input.
 
 For support or inquiries, please contact support@example.com.
 
