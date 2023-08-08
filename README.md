@@ -57,19 +57,19 @@ Typically, every module and framework comes with documentation that provides inf
 
 ## How to use
 
-![Nova Poshta Logo](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/np.png)
+![Nova Poshta Logo](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np_logo.png)
 .1 Nova Poshta API
 To use the delivery services of Nova Poshta, you first need to obtain an API key:
 
 Register on the Nova Poshta website and obtain an API key.
-![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/novaposhta.png)
-![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/np%20api.png)
+![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/novaposhta.png)
+![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np%20api.png)
 
 In the ERPNext system, go to the integration settings.
 Find the section for Nova Poshta API.
 Insert the obtained API key into the "API Key" field.
 Check the "Enabled" field and save the settings.
- ![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/erp%20np%20api.png)
+ ![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/erp%20np%20api.png)
 Now, after successful integration with Nova Poshta, you will be able to utilize their delivery services for comparing rates, generating labels, and tracking shipment statuses in the ERPNext system.
 
 
@@ -77,18 +77,18 @@ Now, after successful integration with Nova Poshta, you will be able to utilize 
 
 - **Compare Shipping Rates**:
   Click the "Fetch Shipping Rates" button to view a list of shipping rates. Once you select a rate, the system will create the shipment for you.
-  ![Fetch shipping rates](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/fetch%20shipping%20rates.png)
+  ![Fetch shipping rates](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/fetch%20shipping%20rates.png)
 
 - **Shipping Label Generation**:
   Access the shipping label by clicking the "Print Shipping Label" button at the top of the doctype. The label is provided by the selected service provider.
-  ![Print label](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/print%20shipping%20label.png)
-  ![Print label](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/label%20'zebra'.png)
+  ![Print label](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/print%20shipping%20label.png)
+  ![Print label](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/label%20'zebra'.png)
 
 - **Tracking status**:
   Click the "Update Tracking" button to view ` tracking status of shipment.
 
-  ![Tracking status](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/status.png)
-  ![Tracking status](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/status%20done.png)
+  ![Tracking status](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/status.png)
+  ![Tracking status](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/status%20done.png)
   
 ## License
 
