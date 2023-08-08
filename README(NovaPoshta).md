@@ -1,14 +1,15 @@
-# NOVAPOSHTA_ERP - Nova Poshta Shipping Integration for ERPNext
+## ERPNext Shipping
 
-NOVAPOSHTA_ERP is a comprehensive shipping integration for ERPNext that enables seamless logistics and shipping operations using the Nova Poshta shipping service. This integration provides features such as shipment creation, rate comparison, label generation, shipment tracking, and warehouse management. The integration supports multiple platforms, including Nova Poshta, LetMeShip, and SendCloud.
-
-![Nova Poshta Logo](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/np.png)
+A Shipping Integration for ERPNext with various platforms. Platforms integrated in this app are:
+- [Nova Poshta](https://novaposhta.ua/)
+- [LetMeShip](https://www.letmeship.com/en/)
+- [SendCloud](https://www.sendcloud.com/home-new/)
 
 ## Features
 
-- **Shipment Creation**: Easily create shipments to carrier services like FedEx, UPS, and more via Nova Poshta, LetMeShip, and SendCloud.
+- **Shipment Creation**: Easily create shipments to carrier services like Nova Poshta, LetMeShip, and SendCloud.
 
-- **Rate Comparison**: Compare shipping rates from different carriers and service providers to make informed shipping decisions.
+- **Fetch shipping rates**: Compare shipping rates from different carriers and service providers to make informed shipping decisions.
 
 - **Label Printing**: Generate shipping labels directly from the ERPNext system, ensuring accurate and professional label generation.
 
@@ -16,24 +17,62 @@ NOVAPOSHTA_ERP is a comprehensive shipping integration for ERPNext that enables 
 
 - **Shipment Tracking**: Keep track of the status of your shipments in real-time using the integrated tracking functionality.
 
+
 ## Setup
+To install the ERPNext shipping module with Nova Poshta integration, follow these steps:
 
-1. **Nova Poshta API Integration**:
-   To utilize Nova Poshta's delivery services, you need to set up the API integration:
+- Download the ERPNext shipping module from GitHub:
+Open your terminal and navigate to the bench directory:
+bash
 
-   - Register on the Nova Poshta website and obtain an API key.
-     ![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/novaposhta.png)
-     ![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/np%20api.png)
-   - In ERPNext, go to the integration settings.
-   - Locate the Nova Poshta API section.
-   - Enter the obtained API key in the "API Key" field.
-   - Enable the integration by checking the "Enabled" field and save the settings.
-     ![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/erp%20np%20api.png)
+cd /path/to/bench/directory
+- Download the module using the bench get-app command:
+arduino
 
-   Once integrated, you can use Nova Poshta's services for rate comparison, label generation, and shipment tracking within ERPNext.
+bench get-app https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP.git
 
-2. **Service Provider API Keys**:
-   For the rate comparison feature to work, generate API keys from your chosen service providers. Enable or disable specific doctypes similar to the "Integrations" section based on your needs.
+- Install the ERPNext shipping module on your site:
+Navigate to the bench directory if you're not already there:
+bash
+
+cd /path/to/bench/directory
+- Install the module on your site using the following command, replacing [site_name] with the name of your site:
+css
+
+bench --site [site_name] install-app erpnext_shipping
+- Start the server:
+After installing the module, restart the server so that the changes take effect. Use the following command to start the server:
+sql
+
+bench start
+
+This will start the ERPNext development server.
+
+Verify the functionality of the new module:
+- Open a web browser and navigate to the address where your ERPNext site is running, typically at http://localhost:8000. Ensure that the new shipping module is displayed and working correctly.
+Configure the shipping module:
+Some modules require additional configuration steps to work properly. Refer to the documentation provided for the module and follow any configuration instructions specified there.
+- Review the documentation:
+Typically, every module and framework comes with documentation that provides information about how to use the new module, its features, and settings. Make sure you have reviewed the documentation to utilize the new module effectively.
+
+
+## How to use
+
+![Nova Poshta Logo](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/np.png)
+.1 Nova Poshta API
+To use the delivery services of Nova Poshta, you first need to obtain an API key:
+
+Register on the Nova Poshta website and obtain an API key.
+![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/novaposhta.png)
+![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/np%20api.png)
+
+In the ERPNext system, go to the integration settings.
+Find the section for Nova Poshta API.
+Insert the obtained API key into the "API Key" field.
+Check the "Enabled" field and save the settings.
+ ![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/erp%20np%20api.png)
+Now, after successful integration with Nova Poshta, you will be able to utilize their delivery services for comparing rates, generating labels, and tracking shipment statuses in the ERPNext system.
+
 
 ## Usage
 
@@ -71,3 +110,4 @@ We appreciate your efforts in improving NOVAPOSHTA_ERP!
 This integration is developed and maintained by [Your Company Name]. We thank the contributors and the community for their valuable input.
 
 For support or inquiries, please contact support@example.com.
+
