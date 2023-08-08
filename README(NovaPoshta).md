@@ -24,7 +24,7 @@ To install the ERPNext shipping module with Nova Poshta integration, follow thes
 - Download the ERPNext shipping module from GitHub:
 Open your terminal and navigate to the bench directory:
 
-$ cd /path/to/bench/directory
+cd /path/to/bench/directory
 
 - Download the module using the bench get-app command:
 
