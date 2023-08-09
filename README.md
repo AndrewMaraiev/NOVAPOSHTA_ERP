@@ -24,24 +24,25 @@ To install the ERPNext shipping module with Nova Poshta integration, follow thes
 - Download the ERPNext shipping module from GitHub:
 Open your terminal and navigate to the bench directory:
 
-```bash: cd /path/to/bench/directory
+ cd /path/to/bench/directory
 
 - Download the module using the bench get-app command:
-```bash: bench get-app https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP.git
+- 
+bench get-app https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP.git
 
 - Install the ERPNext shipping module on your site:
 Navigate to the bench directory if you're not already there:
 
-```bash: cd /path/to/bench/directory
+ cd /path/to/bench/directory
 
 - Install the module on your site using the following command, replacing [site_name] with the name of your site:
 
-```bash: bench --site [site_name] install-app erpnext_shipping
+ bench --site [site_name] install-app erpnext_shipping
 
 - Start the server:
 After installing the module, restart the server so that the changes take effect. Use the following command to start the server:
 
-```bash: bench start
+ bench start
 
 This will start the ERPNext development server.
 
