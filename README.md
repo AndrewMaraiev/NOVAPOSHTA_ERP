@@ -27,8 +27,7 @@ Open your terminal and navigate to the bench directory:
 cd /path/to/bench/directory
 
 - Download the module using the bench get-app command:
-§bash:
-bench get-app https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP.git
+§bash: bench get-app https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP.git
 
 - Install the ERPNext shipping module on your site:
 Navigate to the bench directory if you're not already there:
