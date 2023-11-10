@@ -80,12 +80,11 @@ Now, after successful integration with Nova Poshta, you will be able to utilize 
   ![Fetch shipping rates](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/fetch%20shipping%20rates.png)
 
   We are looking for the "NovaPoshta specific" field.
-  ![NovaPoshta specific]
-(https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np1.png)
-(https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np2.png)
-(https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np3.png)
-(https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np4.png)
-(https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np5.png)
+  ![NovaPoshta specific](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np1.png)
+  ![NovaPoshta specific](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np2.png)
+  ![NovaPoshta specific](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np3.png)
+  ![NovaPoshta specific](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np4.png)
+  ![NovaPoshta specific](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np5.png)
 
 
 - **Shipping Label Generation**:
