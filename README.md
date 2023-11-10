@@ -79,6 +79,14 @@ Now, after successful integration with Nova Poshta, you will be able to utilize 
   Click the "Fetch Shipping Rates" button to view a list of shipping rates. Once you select a rate, the system will create the shipment for you.
   ![Fetch shipping rates](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/fetch%20shipping%20rates.png)
 
+  We are looking for the "NovaPoshta specific" field.
+  ![NovaPoshta specific](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np1.png)
+  ![NovaPoshta specific](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np2.png)
+  ![NovaPoshta specific](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np3.png)
+  ![NovaPoshta specific](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np4.png)
+  ![NovaPoshta specific](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/np5.png)
+
+
 - **Shipping Label Generation**:
   Access the shipping label by clicking the "Print Shipping Label" button at the top of the doctype. The label is provided by the selected service provider.
   ![Print label](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/print%20shipping%20label.png)
@@ -106,7 +114,6 @@ We appreciate your efforts in improving NOVAPOSHTA_ERP!
 
 ## Credits
 
-This integration is developed and maintained by [iKrok](https://github.com/ikrokdev). We thank the contributors([Vladykart](https://github.com/Vladykart) and [NazikXY](https://github.com/NazikXY)) and the community for their valuable input.
+This integration is developed and maintained by [iKrok](https://github.com/ikrokdev). We thank the contributors ([Vladykart](https://github.com/Vladykart) and [NazikXY](https://github.com/NazikXY)) and the community for their valuable input.
 
-For support or inquiries, please contact support@example.com.
 

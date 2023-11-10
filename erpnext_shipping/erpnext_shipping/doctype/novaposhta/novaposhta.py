@@ -35,7 +35,7 @@ class NovaPoshta(Document):
 class NovaPoshta(Document):
     @whitelist()
     def get_areas(self):
-        client = NovaPoshtaApi(api_key='ed0b9e715fefe9ba6b2a3ec7cce89a1a')
+        client = NovaPoshtaApi(api_key='YOUR API KEY')
         addresses = client.address
         areas = addresses.get_areas()
         print(areas.json())
@@ -59,7 +59,7 @@ class NovaPoshta(Document):
 
     @whitelist()
     def get_cities(self):
-        client = NovaPoshtaApi(api_key='ed0b9e715fefe9ba6b2a3ec7cce89a1a')
+        client = NovaPoshtaApi(api_key='YOUR API KEY')
         cities = client.address.get_cities()
         cities_data = cities.json().get('data', [])
 
@@ -84,7 +84,7 @@ class NovaPoshta(Document):
 
     @whitelist()
     def get_warehouses(self):
-        client = NovaPoshtaApi(api_key='ed0b9e715fefe9ba6b2a3ec7cce89a1a')
+        client = NovaPoshtaApi(api_key='YOUR API KEY')
         warehouses = client.address.get_warehouses()
         warehouses_data = warehouses.json().get('data', [])
 
@@ -484,7 +484,7 @@ class NovaPoshtaUtils:
 <<<<<<< HEAD
 @frappe.whitelist()      
 def get_label(waybill_number):
-    api_key = 'ed0b9e715fefe9ba6b2a3ec7cce89a1a'
+    api_key = 'YOUR API KEY'
     api_endpoint = 'https://my.novaposhta.ua/orders/printMarking100x100'
 
     html_print_url = f'{api_endpoint}/orders/printMarking100x100/orders[]/{waybill_number}/type/html/apiKey/{api_key}/zebra'
