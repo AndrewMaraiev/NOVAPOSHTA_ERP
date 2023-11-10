@@ -106,6 +106,6 @@ We appreciate your efforts in improving NOVAPOSHTA_ERP!
 
 ## Credits
 
-This integration is developed and maintained by [iKrok](https://github.com/ikrokdev). We thank the contributors ([AndrewM]([https://github.com/AndrewMaraiev), [Vladykart](https://github.com/Vladykart) and [NazikXY](https://github.com/NazikXY)) and the community for their valuable input.
+This integration is developed and maintained by [iKrok](https://github.com/ikrokdev). We thank the contributors ([AndrewMaraiev]([https://github.com/AndrewMaraiev), [Vladykart](https://github.com/Vladykart) and [NazikXY](https://github.com/NazikXY)) and the community for their valuable input.
 
 
