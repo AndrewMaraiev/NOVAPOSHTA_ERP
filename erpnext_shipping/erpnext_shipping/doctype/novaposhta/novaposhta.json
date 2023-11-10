@@ -7,8 +7,10 @@
  "field_order": [
   "enabled",
   "api_id",
+  "selfapi_key",
   "get_areas",
-  "selfapi_key"
+  "get_cities",
+  "get_warehouses"
  ],
  "fields": [
   {
@@ -24,19 +26,29 @@
    "read_only_depends_on": "eval:doc.enabled == 0"
   },
   {
-   "fieldname": "get_areas",
-   "fieldtype": "Button",
-   "label": "Get Areas"
-  },
-  {
    "fieldname": "selfapi_key",
    "fieldtype": "Data",
    "label": "API key"
+  },
+  {
+   "fieldname": "get_areas",
+   "fieldtype": "Button",
+   "label": "get areas"
+  },
+  {
+   "fieldname": "get_cities",
+   "fieldtype": "Button",
+   "label": "get cities"
+  },
+  {
+   "fieldname": "get_warehouses",
+   "fieldtype": "Button",
+   "label": "get warehouses"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2023-04-04 17:07:28.384735",
+ "modified": "2023-08-29 14:26:27.157270",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "NovaPoshta",

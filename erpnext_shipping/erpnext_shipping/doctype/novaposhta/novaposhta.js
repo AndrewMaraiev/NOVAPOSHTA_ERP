@@ -5,4 +5,15 @@ frappe.ui.form.on('NovaPoshta', {
 	// refresh: function(frm) {
 
 	// }
+	get_areas : function(frm){
+		frm.call('get_areas')
+		},
+
+	get_warehouses : function(frm){
+		frm.call('get_warehouses')
+		},
+
+	get_cities : function(frm){
+		frm.call('get_cities')
+		}
 });
