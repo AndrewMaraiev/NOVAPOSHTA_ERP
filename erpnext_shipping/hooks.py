@@ -57,10 +57,9 @@ doctype_js = {
 # website_generators = ["Web Page"]
 
 # Installation
-# ------------
 
 # before_install = "erpnext_shipping.install.before_install"
-# after_install = "erpnext_shipping.install.after_install"
+after_install = "erpnext_shipping.install.after_install"
 
 # Desk Notifications
 # ------------------
