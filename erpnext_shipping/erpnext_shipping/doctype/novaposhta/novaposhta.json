@@ -7,7 +7,7 @@
  "field_order": [
   "enabled",
   "api_id",
-  "selfapi_key",
+  "api_key",
   "get_areas",
   "get_cities",
   "get_warehouses"
@@ -26,11 +26,6 @@
    "read_only_depends_on": "eval:doc.enabled == 0"
   },
   {
-   "fieldname": "selfapi_key",
-   "fieldtype": "Data",
-   "label": "API key"
-  },
-  {
    "fieldname": "get_areas",
    "fieldtype": "Button",
    "label": "get areas"
@@ -44,11 +39,16 @@
    "fieldname": "get_warehouses",
    "fieldtype": "Button",
    "label": "get warehouses"
+  },
+  {
+   "fieldname": "api_key",
+   "fieldtype": "Password",
+   "label": "API key"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2023-08-29 14:26:27.157270",
+ "modified": "2023-11-14 17:48:56.937458",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "NovaPoshta",

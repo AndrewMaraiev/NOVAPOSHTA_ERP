@@ -25,17 +25,17 @@ from erpnext_shipping.erpnext_shipping.utils import show_error_alert
 from frappe import whitelist
 from collections import defaultdict
 from decimal import Decimal
+from frappe.utils.password import get_decrypted_password
+
+
 
 NOVAPOSHTA_PROVIDER = "NovaPoshta"
-
-class NovaPoshta(Document):
-    pass
 
 
 class NovaPoshta(Document):
     @whitelist()
     def get_areas(self):
-        client = NovaPoshtaApi(api_key='YOUR API KEY')
+        client = NovaPoshtaApi(api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key"))
         addresses = client.address
         areas = addresses.get_areas()
         print(areas.json())
@@ -59,7 +59,7 @@ class NovaPoshta(Document):
 
     @whitelist()
     def get_cities(self):
-        client = NovaPoshtaApi(api_key='YOUR API KEY')
+        client = NovaPoshtaApi(api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key"))
         cities = client.address.get_cities()
         cities_data = cities.json().get('data', [])
 
@@ -84,7 +84,7 @@ class NovaPoshta(Document):
 
     @whitelist()
     def get_warehouses(self):
-        client = NovaPoshtaApi(api_key='YOUR API KEY')
+        client = NovaPoshtaApi(api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key"))
         warehouses = client.address.get_warehouses()
         warehouses_data = warehouses.json().get('data', [])
 
@@ -119,7 +119,7 @@ class NovaPoshtaUtils:
         )
         self.enabled = frappe.db.get_value("NovaPoshta", "NovaPoshta", "enabled")
         self.api_endpoint = "https://api.novaposhta.ua/v2.0/json/"
-        self.api = NovaPoshtaApi(api_key='YOUR API KEY')
+        self.api = NovaPoshtaApi(api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key"))
         if not self.enabled:
             link = frappe.utils.get_link_to_form(
                 "NovaPoshta", "NovaPoshta", frappe.bold("NovaPoshta Settings")
@@ -481,62 +481,11 @@ class NovaPoshtaUtils:
             }).json()
             return result
         
-<<<<<<< HEAD
 @frappe.whitelist()      
 def get_label(waybill_number):
-    api_key = 'YOUR API KEY'
+    api_key = get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
     api_endpoint = 'https://my.novaposhta.ua/orders/printMarking100x100'
 
-    html_print_url = f'{api_endpoint}/orders/printMarking100x100/orders[]/{waybill_number}/type/html/apiKey/{api_key}/zebra'
-
-    response = requests.post(html_print_url)
-
-    if response.status_code == 200:
-        return response.text
-    else:
-=======
-        print('Create waybill')
-        print(shipment_parcel)
-        
-        length = shipment_parcel.get("length")
-        width = shipment_parcel.get("width")
-        height = shipment_parcel.get("height")        
-        VolumeGeneral = (length * width * height) / 4000
-        
-        
-        waybill = create_express_waybill(
-            city_sender_ref = pickup_city_ref, 
-            sender_ref = pickup_counterparty_ref,
-            sender_address_ref = pickup_address_warehouse_ref,
-            sender_contact_ref = sender_contact_ref,
-            sender_contact_phone = sender_phone,
-            city_recipient_ref = delivery_city_ref,
-            recipient_ref = delivery_counterparty_ref,
-            recipient_address_ref = delivery_address_warehouse_ref,
-            recipient_contact_ref = recipient_contact_person_ref,
-            recipient_contact_phone = recipient_contact_person_phone,
-            weight=shipment_parcel.get("weight"),
-            volume_general=VolumeGeneral
-
-        )
-        print(waybill)
-
-        waybill_ref = waybill['data'][0]['Ref']
-        waybill_number = waybill['data'][0]['IntDocNumber']
-        print(waybill_ref)
-        print(waybill_number)
-        
-        print("Waybill created")
-        if waybill_number:
-            return {'waybill_number': waybill_number, 'waybill_ref': waybill_ref}
-        raise Exception("Failed to create waybill")
-         
-@frappe.whitelist()      
-def get_label(waybill_number):
-    api_key = 'YOUR API KEY'
-    api_endpoint = 'https://my.novaposhta.ua/orders/printMarking100x100'
-
-    # Визначення URL для друку маркування у форматі HTML для принтера Zebra
     html_print_url = f'{api_endpoint}/orders/printMarking100x100/orders[]/{waybill_number}/type/html/apiKey/{api_key}/zebra'
 
     # Виконання запиту на отримання HTML-файлу з маркуванням
@@ -547,12 +496,13 @@ def get_label(waybill_number):
         return response.text
     else:
         # Якщо отримання HTML не вдалося, викидаємо виняток
->>>>>>> 06be2d68369e106f592896b4affa0b60d5cfeb3d
         raise Exception('Failed to retrieve label HTML')
 
 @frappe.whitelist() 
-def get_tracking_data(api_key, waybill_number, delivery_contact):
+def get_tracking_data(waybill_number, delivery_contact):
     api_endpoint = "https://api.novaposhta.ua/v2.0/json/"
+
+    api_key = get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
 
     body = {
         "apiKey": api_key,
@@ -569,10 +519,7 @@ def get_tracking_data(api_key, waybill_number, delivery_contact):
     }
 
     response = requests.post(api_endpoint, json=body)
-<<<<<<< HEAD
-=======
     pprint(requests)
->>>>>>> 06be2d68369e106f592896b4affa0b60d5cfeb3d
 
     if response.status_code != 200:
         raise Exception(f"Error getting tracking data for {waybill_number}: {response.status_code}")

@@ -318,7 +318,6 @@ frappe.ui.form.on('Shipment', {
 		frappe.call({
 			method: "erpnext_shipping.erpnext_shipping.doctype.novaposhta.novaposhta.get_tracking_data",
 			args: {
-				api_key: 'ed0b9e715fefe9ba6b2a3ec7cce89a1a', // Replace with your Nova Poshta API key
 				waybill_number: waybill,
 				delivery_contact: frm.doc.delivery_contact_name
 			},
