@@ -11,7 +11,7 @@ erpnext/public/dist
 erpnext/docs/current
 *.swp
 *.swo
-__pycache__
+__pycache__/
 *~
 .idea/
 .vscode/

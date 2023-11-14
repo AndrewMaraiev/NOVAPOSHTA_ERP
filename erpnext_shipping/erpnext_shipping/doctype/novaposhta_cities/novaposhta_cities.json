@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{description}-{ref}",
+ "autoname": "field:ref",
  "creation": "2023-08-28 15:01:47.952424",
  "default_view": "List",
  "description": "1",
@@ -21,7 +21,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Ref",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "area",
@@ -58,11 +59,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-01 17:34:17.676587",
+ "modified": "2023-11-14 18:13:49.860123",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "NovaPoshta cities",
- "naming_rule": "Expression",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -78,7 +79,9 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "description"
 }

@@ -67,6 +67,7 @@ class NovaPoshta(Document):
             return
 
         for city in cities_data:
+            
             exist = frappe.db.exists({"doctype": 'NovaPoshta cities', 'ref': city.get('Ref')})
             if exist:
                 continue
@@ -81,6 +82,7 @@ class NovaPoshta(Document):
                 'settlement_type': city.get('SettlementType')
             }, no_label=True)
             new_doc.save()
+            
 
     @whitelist()
     def get_warehouses(self):
@@ -90,8 +92,11 @@ class NovaPoshta(Document):
 
         if not warehouses_data:
             return
+        counter = 0
 
         for warehouse in warehouses_data:
+            if counter > 10:
+                return
             exist = frappe.db.exists({'doctype': 'NovaPoshta Warehouse', 'ref': warehouse.get('Ref')})
             if exist:
                 continue
@@ -110,6 +115,8 @@ class NovaPoshta(Document):
                 
             })
             new_doc.save()
+            counter += 1
+            
 
 
 class NovaPoshtaUtils:
