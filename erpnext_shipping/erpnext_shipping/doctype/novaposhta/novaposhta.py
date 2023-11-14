@@ -92,11 +92,8 @@ class NovaPoshta(Document):
 
         if not warehouses_data:
             return
-        counter = 0
 
         for warehouse in warehouses_data:
-            if counter > 10:
-                return
             exist = frappe.db.exists({'doctype': 'NovaPoshta Warehouse', 'ref': warehouse.get('Ref')})
             if exist:
                 continue
@@ -115,7 +112,6 @@ class NovaPoshta(Document):
                 
             })
             new_doc.save()
-            counter += 1
             
 
 
