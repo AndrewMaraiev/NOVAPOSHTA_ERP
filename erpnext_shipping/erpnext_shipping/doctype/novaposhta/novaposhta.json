@@ -43,12 +43,14 @@
   {
    "fieldname": "api_key",
    "fieldtype": "Password",
-   "label": "API key"
+   "in_list_view": 1,
+   "label": "API key",
+   "reqd": 1
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2023-11-14 17:48:56.937458",
+ "modified": "2023-11-15 16:51:01.303722",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "NovaPoshta",
