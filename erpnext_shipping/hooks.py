@@ -59,7 +59,7 @@ doctype_js = {
 # Installation
 
 # before_install = "erpnext_shipping.install.before_install"
-after_install = "erpnext_shipping.install.after_install"
+# after_install = "erpnext_shipping.install.after_install"
 
 # Desk Notifications
 # ------------------
