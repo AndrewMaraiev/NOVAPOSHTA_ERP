@@ -637,7 +637,7 @@
    "is_virtual": 0,
    "label": "waybill_ref",
    "length": 0,
-   "mandatory_depends_on": "eval: doc.service_provider == 'NovaPoshta'",
+   "mandatory_depends_on": "",
    "modified": "2023-11-22 16:39:46.643459",
    "modified_by": "Administrator",
    "module": null,
