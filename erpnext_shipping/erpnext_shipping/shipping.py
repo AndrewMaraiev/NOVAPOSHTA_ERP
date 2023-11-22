@@ -78,7 +78,6 @@ def create_shipment(
 
     shipment_doc = frappe.get_doc('Shipment', shipment)
 
-    
     if shipment_doc.carrier_service == 'NovaPoshta':
         novaposhta = NovaPoshtaUtils()
         try:
@@ -103,7 +102,6 @@ def create_shipment(
             
             return {}
         
-
         if not shipment_info:
             frappe.msgprint('Failed to create shipment for NovaPoshta')
         else:
@@ -111,7 +109,6 @@ def create_shipment(
             frappe.db.set_value('Shipment', shipment, 'waybill_ref', shipment_info.get('waybill_ref'))
             frappe.db.set_value('Shipment', shipment, 'status', 'Booked')
             frappe.msgprint('Shipment created for NovaPoshta')
-
     return shipment_info
 
 

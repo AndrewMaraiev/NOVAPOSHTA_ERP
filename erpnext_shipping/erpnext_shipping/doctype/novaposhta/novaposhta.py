@@ -118,14 +118,14 @@ class NovaPoshta(Document):
 class NovaPoshtaUtils:
     def __init__(self, api_key: str = None):
         self.api_key = api_key or get_decrypted_password(
-            "NovaPoshta Settings", "NovaPoshta Settings", "api_key", raise_exception=False
+            "NovaPoshta", "NovaPoshta", "api_key", raise_exception=False
         )
         self.enabled = frappe.db.get_value("NovaPoshta", "NovaPoshta", "enabled")
         self.api_endpoint = "https://api.novaposhta.ua/v2.0/json/"
         self.api = NovaPoshtaApi(api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key"))
         if not self.enabled:
             link = frappe.utils.get_link_to_form(
-                "NovaPoshta", "NovaPoshta", frappe.bold("NovaPoshta Settings")
+                "NovaPoshta", "NovaPoshta", frappe.bold("NovaPoshta")
             )
             frappe.throw(
                 _("Please enable NovaPoshta Integration in {0}".format(link)),
@@ -308,7 +308,6 @@ class NovaPoshtaUtils:
             }
         }).json()
         delivery_counterparty_ref = recipient['data'][0]['Ref']
-        print(delivery_counterparty_ref)
 
         recipient_contacts = self.get_counterparty_contacts(delivery_counterparty_ref)
         sender_contact = self.get_counterparty_contacts(pickup_counterparty_ref)[0]
