@@ -1,0 +1,23 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Payment Methods",
+  "name": "card",
+  "payment_id": "card",
+  "payment_method_name": "Card"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Payment Methods",
+  "name": "in_department",
+  "payment_id": "in_department",
+  "payment_method_name": "In Department"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Payment Methods",
+  "name": "on_account",
+  "payment_id": "on_account",
+  "payment_method_name": "Pay with Account"
+ }
+]

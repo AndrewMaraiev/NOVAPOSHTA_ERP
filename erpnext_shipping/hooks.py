@@ -131,3 +131,7 @@ doctype_js = {
 #
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
 
+fixtures = [
+    "Shipment Providers",
+    "Payment Methods"
+	]

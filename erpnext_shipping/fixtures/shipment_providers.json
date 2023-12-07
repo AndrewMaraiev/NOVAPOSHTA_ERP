@@ -1,0 +1,23 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Shipment Providers",
+  "name": "nova_poshta",
+  "provider_id": "nova_poshta",
+  "provider_name": "Nova Poshta"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Shipment Providers",
+  "name": "pickup",
+  "provider_id": "pickup",
+  "provider_name": "Pickup"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Shipment Providers",
+  "name": "ukrposhta",
+  "provider_id": "ukrposhta",
+  "provider_name": "Ukrposhta"
+ }
+]
