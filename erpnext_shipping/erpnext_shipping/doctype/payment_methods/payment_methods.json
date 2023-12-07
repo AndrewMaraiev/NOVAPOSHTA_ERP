@@ -1,48 +1,40 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2023-04-14 16:29:14.813656",
+ "autoname": "field:payment_id",
+ "creation": "2023-11-23 12:43:33.967406",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "novaposhta",
-  "carier",
-  "carier_name",
-  "api_key"
+  "payment_method_name",
+  "payment_id"
  ],
  "fields": [
   {
-   "fieldname": "novaposhta",
+   "fieldname": "payment_method_name",
    "fieldtype": "Data",
-   "label": "Name",
-   "options": "NovaPoshta"
+   "in_list_view": 1,
+   "label": "Method Name",
+   "reqd": 1
   },
   {
-   "fieldname": "carier",
+   "fieldname": "payment_id",
    "fieldtype": "Data",
-   "label": "Provider Type"
-  },
-  {
-   "fieldname": "carier_name",
-   "fieldtype": "Data",
-   "label": "Carier name",
-   "options": "NovaPoshta"
-  },
-  {
-   "fieldname": "api_key",
-   "fieldtype": "Data",
-   "label": "API Key",
-   "options": "https://api.novaposhta.ua/v2.0/json/"
+   "in_list_view": 1,
+   "label": "Method ID",
+   "reqd": 1,
+   "unique": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-04-19 13:41:09.464623",
+ "modified": "2023-12-07 12:28:28.709604",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
- "name": "Shipping Providers",
+ "name": "Payment Methods",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -58,7 +50,10 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "payment_method_name",
+ "translated_doctype": 1
 }
