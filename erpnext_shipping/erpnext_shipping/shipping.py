@@ -68,6 +68,8 @@ def create_shipment(
     value_of_goods,
     service_info='WarehouseWarehouse'
 ):
+    
+    
     shipment_info = {}
     pickup_warehouse_object = frappe.get_doc('NovaPoshta Warehouse', pickup_warehouse_name)
     pickup_warehouse_ref = pickup_warehouse_object.ref 

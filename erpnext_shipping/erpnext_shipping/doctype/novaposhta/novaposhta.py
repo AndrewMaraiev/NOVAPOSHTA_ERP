@@ -2,31 +2,22 @@ from __future__ import unicode_literals
 import json
 import requests
 from pprint import pprint
-from time import sleep
+import frappe
+
 from frappe import _
-from frappe.utils.pdf import get_pdf
+
 from frappe.model.document import Document
 from frappe.utils import flt
 from frappe.utils.password import get_decrypted_password
 from requests import post
-from . import novaposhta
-from werkzeug.wrappers import Response
-from werkzeug.wsgi import wrap_file
 
-from frappe.utils.response import build_response
-
-import base64
-
-import frappe
-from erpnext.stock.doctype import shipment as shipment_doctype, shipment_parcel as shipment_parcel_doctype
 from erpnext_shipping.erpnext_shipping.doctype.novaposhta.np_client import NovaPoshtaApi
-from erpnext_shipping.erpnext_shipping.doctype.novaposhta_settings.novaposhta_settings import NovaPoshtaSettings
-from erpnext_shipping.erpnext_shipping.utils import show_error_alert
+
+
 from frappe import whitelist
-from collections import defaultdict
+
 from decimal import Decimal
 from frappe.utils.password import get_decrypted_password
-
 
 
 NOVAPOSHTA_PROVIDER = "NovaPoshta"
@@ -59,62 +50,93 @@ class NovaPoshta(Document):
 
     @whitelist()
     def get_cities(self):
-        client = NovaPoshtaApi(api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key"))
-        cities = client.address.get_cities()
-        cities_data = cities.json().get('data', [])
+        page = 1
+        limit = 500 
 
-        if not cities_data:
-            return
+        while True:
+            client = NovaPoshtaApi(api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key"))
+            cities = client.address.get_cities(page=page)
+            cities_data = cities.json().get('data', [])
 
-        for city in cities_data:
-            
-            exist = frappe.db.exists({"doctype": 'NovaPoshta cities', 'ref': city.get('Ref')})
-            if exist:
-                continue
-            pprint(cities)
-            new_doc = frappe.get_doc({
-                'doctype': 'NovaPoshta cities',
-                'country': "Ukraine",
-                'city_name': city.get('Description'),
-                'ref': city.get('Ref'),
-                'description': city.get('Description'),
-                'area': city.get('Area'),
-                'settlement_type': city.get('SettlementType')
-            }, no_label=True)
-            new_doc.save()
+            if not cities_data:
+                break
+
+            for city in cities_data:
+                exist = frappe.db.exists({"doctype": 'NovaPoshta cities', 'ref': city.get('Ref')})
+                if exist:
+                    continue
+
+                new_doc = frappe.get_doc({
+                    'doctype': 'NovaPoshta cities',
+                    'country': "Ukraine",
+                    'city_name': city.get('Description'),
+                    'ref': city.get('Ref'),
+                    'description': city.get('Description'),
+                    'area': city.get('Area'),
+                    'settlement_type': city.get('SettlementType')
+                })
+                new_doc.save()
+
+            page += 1
             
 
     @whitelist()
     def get_warehouses(self):
         client = NovaPoshtaApi(api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key"))
-        warehouses = client.address.get_warehouses()
-        warehouses_data = warehouses.json().get('data', [])
+        page = 1
+        limit = 500
 
-        if not warehouses_data:
-            return
+        while True:
+            # Оновлення методу з урахуванням пагінації
+            warehouses = client.address.get_warehouses(page=page, limit=limit)
+            warehouses_data = warehouses.json().get('data', [])
 
-        for warehouse in warehouses_data:
-            exist = frappe.db.exists({'doctype': 'NovaPoshta Warehouse', 'ref': warehouse.get('Ref')})
-            if exist:
-                continue
-            pprint(warehouse)
+            if not warehouses_data:
+                break
+
+            for warehouse in warehouses_data:
+                # Перевірка існування міста перед створенням складу
+                exist_city = frappe.db.exists({'doctype': 'NovaPoshta cities', 'ref': warehouse.get('CityRef')})
+                if not exist_city:
+                    continue  # Пропустити склад, якщо місто не знайдено
+
+                exist = frappe.db.exists({'doctype': 'NovaPoshta Warehouse', 'ref': warehouse.get('Ref')})
+                if exist:
+                    continue
+
+                new_doc = frappe.get_doc({
+                    'doctype': 'NovaPoshta Warehouse',
+                    'country': "Ukraine",
+                    'warehouse_name': warehouse.get('Description'),
+                    'ref': warehouse.get('Ref'),
+                    'description': warehouse.get('Description'),
+                    'city': warehouse.get('CityRef'),
+                    'area': warehouse.get('SettlementAreaDescription'),
+                    'warehouse_index': warehouse.get('WarehouseIndex'),
+                })
+                new_doc.save()
+
+            page += 1
             
 
-            new_doc = frappe.get_doc({
-                'doctype': 'NovaPoshta Warehouse',
-                'country': "Ukraine",
-                'warehouse_name': warehouse.get('Description'),
-                'ref': warehouse.get('Ref'),
-                'description': warehouse.get('Description'),
-                'city': warehouse.get('CityRef'),
-                'area': warehouse.get('SettlementAreaDescription'),
-                'warehouse_index': warehouse.get('WarehouseIndex'),
-                
-            })
-            new_doc.save()
-            
+    @whitelist()
+    def update_novaposhta_data(self):
+        frappe.enqueue(
+            self.update_novaposhta_data_background,
+            queue='novaposhta_queue',
+            job_name='NovaPoshta data update'
+        )
 
+    def update_novaposhta_data_background(self):
+        self.get_areas()
+        self.get_cities()
+        self.get_warehouses()
 
+    def validate(self):
+        # Перевірка, чи об'єкт NovaPoshta налаштований та активний
+        if not NovaPoshta.get_active_novaposhta():
+            frappe.throw(_("Please configure and activate NovaPoshta integration first"))
+    
 class NovaPoshtaUtils:
     def __init__(self, api_key: str = None):
         self.api_key = api_key or get_decrypted_password(
@@ -349,9 +371,6 @@ class NovaPoshtaUtils:
         height = shipment_parcel.get("height")        
         VolumeGeneral = ((length /100) * (width /100) * (height /100))
         
-        print(VolumeGeneral)
-        print(shipment_parcel.get("weight"))
-        
         
         waybill = self.create_express_waybill(
             city_sender_ref = pickup_city_ref, 
@@ -376,7 +395,7 @@ class NovaPoshtaUtils:
         print(waybill_ref)
         print(waybill_number)
         
-        print("Waybill created")
+
         if waybill_number:
             return {'waybill_number': waybill_number, 'waybill_ref': waybill_ref}
         raise Exception("Failed to create waybill")

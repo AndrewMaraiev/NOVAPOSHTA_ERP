@@ -95,19 +95,17 @@ frappe.templates['shipment'] = `
 	font-size: 16px;
 }
 </style>
-
-
 `;
-frappe.ui.form.on('Shipment', 'pickup_city', function(frm){
-	
-	frm.fields_dict.pickup_warehouse.df['filters'] = {city: frm.fields_dict.pickup_city.value}
 
-});
-frappe.ui.form.on('Shipment', 'delivery_to_city', function(frm){
-	
-	frm.fields_dict.delivery_to_warehouse.df['filters'] = {city: ["like", "%" + frm.fields_dict.delivery_to_city.value+"%"]}
+// frappe.ui.form.on('Delivery Note', 'pickup_city', function(frm){
+// 	frm.fields_dict.pickup_warehouse.df['filters'] = {city: frm.fields_dict.pickup_city.value};
+// });
+// console.log('HERE')
 
-});
+// frappe.ui.form.on('Delivery Note', 'delivery_to_city', function(frm){
+// 	frm.fields_dict.delivery_to_warehouse.df['filters'] = {city: ["like", "%" + frm.fields_dict.delivery_to_city.value+"%"]};
+// });
+
 frappe.ui.form.on('Shipment', {
 	refresh: function(frm) {
 		if (frm.doc.docstatus === 1 && !frm.doc.shipment_id) {
@@ -136,8 +134,22 @@ frappe.ui.form.on('Shipment', {
 		}
 	},
 
+	create_shipment_from_delivery_note: function(frm) {
+		frappe.call({
+			method: "erpnext_shipping.erpnext_shipping.shipping.create_shipment_from_delivery_note",
+			args: {
+				delivery_note: frm.doc.delivery_note 
+			},
+			callback: function(r) {
+				if (r.message) {
+			
+				}
+			}
+		});
+	},
+
 	fetch_shipping_rates: function(frm) {
-		console.log(frm)
+		console.log(frm);
 		if (!frm.doc.shipment_id) {
 			frappe.call({
 				method: "erpnext_shipping.erpnext_shipping.shipping.fetch_shipping_rates",
@@ -151,149 +163,38 @@ frappe.ui.form.on('Shipment', {
 					shipment_parcel: frm.doc.shipment_parcel,
 					value_of_goods: frm.doc.value_of_goods
 				},
-				
 				callback: function(r) {
 					if (r.message && r.message.length) {
 						console.log(r.message);
 						select_from_available_services(frm, r.message);
 					} else {
-						frappe.msgprint({ message: __("No Shipment Services available"), title: __("Note") });
+						frappe.msgprint({
+							message: __("No shipping rates available for the selected route and parcel type."),
+							title: __("No Rates Found"),
+							indicator: "orange"
+						});
 					}
 				}
 			});
 		} else {
-			frappe.throw(__("Shipment already created"));
+			frappe.msgprint(__("Shipment ID already assigned. Cannot fetch shipping rates."));
 		}
 	},
-
-// frappe.ui.form.on('Shipment', {
-// 	refresh: function(frm) {
-// 		if (frm.doc.docstatus === 1 && !frm.doc.shipment_id) {
-// 			frm.add_custom_button(__('Fetch Shipping Rates'), function() {
-// 				let d = new frappe.ui.Dialog({
-// 					title: 'Enter details',
-// 					fields: [
-// 						{
-// 							label: 'City',
-// 							fieldname: 'city_name',
-// 							fieldtype: 'Link',
-// 							options: "NovaPoshta cities"
-// 						},
-// 						{
-// 							label: 'Warehouse',
-// 							fieldname: 'warehouse',
-// 							fieldtype: 'Link',
-// 							options: "NovaPoshta Warehouse",
-// 							// filters: 'city==city_name',
-// 							query: 'erpnext_shiping.erpnext_shiping.doctype.novaposhta_warehouse.novaposhta_warehouse.warehouse_query',
-// 							filters: {
-// 								city: 'null'
-// 							}
-// 						},
-// 						{
-// 							label: 'Age',
-// 							fieldname: 'age',
-// 							fieldtype: 'Int'
-// 						}
-// 					],
-// 					size: 'small', // small, large, extra-large 
-// 					primary_action_label: 'Submit',
-// 					primary_action(values) {
-// 						console.log(values);
-// 						d.hide();
-// 					},
-// 					onkeydown(value){ console.log(value)},
-// 					warehouse_query(values){
-// 						console.log(values)
-// 					}
-// 				});
-
-// 				console.log(d)
-// 				// d.on('Dialog', {
-// 				// 	city_name_query: function(value){
-// 				// 		console.log(value)
-// 				// 	}
-// 				// }
-				
-// 				// )
-
-				
-				
-// 				d.show();
-// 				// return frm.events.fetch_shipping_rates(frm);
-// 			});
-// 		}
-// 		if (frm.doc.shipment_id) {
-// 			frm.add_custom_button(__('Print Shipping Label'), function() {
-// 				return frm.events.print_shipping_label(frm);
-// 			}, __('Tools'));
-// 			if (frm.doc.tracking_status != 'Delivered') {
-// 				frm.add_custom_button(__('Update Tracking'), function() {
-// 					return frm.events.update_tracking(frm, frm.doc.service_provider, frm.doc.shipment_id);
-// 				}, __('Tools'));
-
-// 				frm.add_custom_button(__('Track Status'), function() {
-// 					if (frm.doc.tracking_url) {
-// 						const urls = frm.doc.tracking_url.split(', ');
-// 						urls.forEach(url => window.open(url));
-// 					} else {
-// 						frappe.msgprint(__('No Tracking URL found'));
-// 					}
-// 				}, __('Tools'));
-// 			}
-// 		}
-// 	},
-
-// 	fetch_shipping_rates: function(frm) {
-// 		if (!frm.doc.shipment_id) {
-// 			frappe.call({
-// 				method: "erpnext_shipping.erpnext_shipping.shipping.fetch_shipping_rates",
-// 				freeze: true,
-// 				freeze_message: __("Fetching Shipping Rates"),
-// 				args: {
-// 					pickup_from_type: frm.doc.pickup_from_type,
-// 					delivery_to_type: frm.doc.delivery_to_type,
-// 					pickup_address_name: frm.doc.pickup_address_name,
-// 					delivery_address_name: frm.doc.delivery_address_name,
-// 					shipment_parcel: frm.doc.shipment_parcel,
-// 					description_of_content: frm.doc.description_of_content,
-// 					pickup_date: frm.doc.pickup_date,
-// 					pickup_contact_name: frm.doc.pickup_from_type === 'Company' ? frm.doc.pickup_contact_person : frm.doc.pickup_contact_name,
-// 					delivery_contact_name: frm.doc.delivery_contact_name,
-// 					value_of_goods: frm.doc.value_of_goods
-// 				},
-// 				callback: function(r) {
-// 					if (r.message && r.message.length) {
-// 						console.log(r.message);
-// 						select_from_available_services(frm, r.message);
-// 					} else {
-// 						frappe.msgprint({ message: __("No Shipment Services available"), title: __("Note") });
-// 					}
-// 				}
-// 			});
-// 		} else {
-// 			frappe.throw(__("Shipment already created"));
-// 		}
-// 	},
 
 	print_shipping_label: function(frm) {
 		var shipment_id = frm.doc.shipment_id;
 		if (shipment_id) {
-			// window.open("/api/method/erpnext_shipping.erpnext_shipping.doctype.novaposhta.novaposhta.get_label");
-
 			frappe.call({
 				method: "erpnext_shipping.erpnext_shipping.doctype.novaposhta.novaposhta.get_label",
 				args: {
 					waybill_number: shipment_id,
-					ref: frm.d
+					ref: frm.doc.name // pass other necessary data
 				},
 				callback: function(response) {
-					if (response) {
+					if (response && response.message) {
 						var label_url = response.message;
-						console.log(response)
-						// var printWindow = window.open(label_url, "_blank");
 						var mywindow = window.open('', 'PRINT', 'height=100,width=100');
-						mywindow.document.write(label_url)
+						mywindow.document.write(label_url);
 						mywindow.onload = function() {
 							mywindow.print();
 						};
@@ -308,13 +209,11 @@ frappe.ui.form.on('Shipment', {
 	},
 
 	update_tracking: function(frm, service_provider, waybill) {
-		// Check if the waybill and service provider are provided
 		if (!waybill || !service_provider) {
 			frappe.msgprint("Waybill or Service Provider not provided.");
 			return;
 		}
-	
-		// Implement the code to fetch tracking information using the NovaPoshtaUtils API
+
 		frappe.call({
 			method: "erpnext_shipping.erpnext_shipping.doctype.novaposhta.novaposhta.get_tracking_data",
 			args: {
@@ -324,18 +223,12 @@ frappe.ui.form.on('Shipment', {
 			callback: function(response) {
 				if (response && response.message && response.message.data && response.message.data.length > 0) {
 					const trackingData = response.message.data[0];
-					// Update the tracking information in the Shipment document
 					frm.doc.tracking_status = trackingData.StatusCode;
 					frm.doc.tracking_status_description = getTrackingStatusDescription(trackingData.StatusCode.toString());
-	
-					// Optionally, you can also update other relevant information as needed
 					frm.doc.actual_delivery_date = trackingData.ActualDeliveryDate;
 					frm.doc.city_recipient = trackingData.CityRecipient;
 					frm.doc.city_sender = trackingData.CitySender;
-	
-					// Save the updated document
 					frm.save();
-					// frappe.msgprint("Tracking information updated successfully.");
 					frappe.msgprint(getTrackingStatusDescription(trackingData.StatusCode));
 				} else {
 					frappe.msgprint("Failed to update tracking information.");
@@ -343,7 +236,7 @@ frappe.ui.form.on('Shipment', {
 			}
 		});
 	}
-	});
+});
 
 function getTrackingStatusDescription(statusCode) {
     switch (statusCode) {
@@ -391,7 +284,7 @@ function getTrackingStatusDescription(statusCode) {
         case '106':
             return 'Одержано і створено ЄН зворотньої доставки';
         case '111':
-            return 'Невдала спроба доставки через відсутність Одержувача на адресі або зв\'язку з ним';
+            return 'Невдала спроба доставки через відсутність Одержувача на адресі або звязку з ним';
         case '112':
             return 'Дата доставки перенесена Одержувачем';
         default:

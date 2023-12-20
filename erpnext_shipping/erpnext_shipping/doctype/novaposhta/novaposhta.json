@@ -20,12 +20,6 @@
    "label": "Enabled"
   },
   {
-   "fieldname": "api_id",
-   "fieldtype": "Data",
-   "label": "API ID",
-   "read_only_depends_on": "eval:doc.enabled == 0"
-  },
-  {
    "fieldname": "get_areas",
    "fieldtype": "Button",
    "label": "get areas"
