@@ -38,6 +38,7 @@ class NovaPoshta(Document):
             exist = frappe.db.exists({"doctype": 'NovaPoshta areas', 'ref': area.get('Ref')})
             if exist:
                 continue
+            
 
             new_doc = frappe.get_doc({
                 "doctype": 'NovaPoshta areas',
