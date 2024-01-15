@@ -297,6 +297,8 @@ class NovaPoshtaUtils:
         pickup_date,
         value_of_goods,
         service_info='WarehouseWarehouse',
+        sender_warehouseindex=None,
+        recipient_warehouseindex=None,
     ):
         
 
@@ -307,6 +309,9 @@ class NovaPoshtaUtils:
                 raise Exception("Invalid shipment_parcel JSON format") from e
             
         shipment_parcel = shipment_parcel[0]
+        
+        pprint(sender_warehouseindex)
+        pprint(recipient_warehouseindex)
         
         sender = post(self.api_endpoint, json={
             "apiKey": self.api_key,
@@ -374,12 +379,12 @@ class NovaPoshtaUtils:
         
         
         waybill = self.create_express_waybill(
-            city_sender_ref = pickup_city_ref, 
+            pickup_city_ref = pickup_city_ref, 
             sender_ref = pickup_counterparty_ref,
             sender_address_ref = pickup_warehouse_ref,
             sender_contact_ref = sender_contact_ref,
             sender_contact_phone = sender_phone,
-            city_recipient_ref = delivery_city_ref,
+            delivery_city_ref = delivery_city_ref,
             recipient_ref = delivery_counterparty_ref,
             recipient_address_ref = delivery_warehouse_ref,
             recipient_contact_ref = recipient_contact_person_ref,
@@ -387,8 +392,14 @@ class NovaPoshtaUtils:
             description_of_content=description_of_content,
             weight=shipment_parcel.get("weight"),
             volume_general=VolumeGeneral,
-            value_of_goods=value_of_goods
+            value_of_goods=value_of_goods,
+            sender_warehouseindex=sender_warehouseindex,  
+            recipient_warehouseindex=recipient_warehouseindex,
+            width = width,
+            length = length,
+            height = height
         )
+            
         print(waybill)
 
         waybill_ref = waybill['data'][0]['Ref']
@@ -458,50 +469,71 @@ class NovaPoshtaUtils:
             raise Exception("Failed to create recipient contact")
     
     def create_express_waybill(
-            self,
-            city_sender_ref,
-            sender_ref,
-            sender_address_ref,
-            sender_contact_ref,
-            sender_contact_phone,
-            city_recipient_ref,
-            recipient_ref,
-            recipient_address_ref,
-            recipient_contact_ref,
-            recipient_contact_phone,
-            description_of_content,
-            weight,
-            volume_general,
-            value_of_goods
-        ):  
-    
-            result = post(self.api_endpoint, json={
-                "apiKey": self.api_key,
-                "modelName": "InternetDocument",
-                "calledMethod": "save",
-                "methodProperties": {
-                    "PayerType": "Recipient",
-                    "PaymentMethod": "Cash",
-                    "CargoType": "Cargo",
-                    "VolumeGeneral": volume_general,
-                    "Weight": weight,
-                    "ServiceType": "WarehouseWarehouse",
-                    "SeatsAmount": "1",
-                    "Description": description_of_content,
-                    "Cost": value_of_goods,
-                    "CitySender": city_sender_ref,
-                    "Sender": sender_ref,
-                    "SenderAddress": sender_address_ref,
-                    "ContactSender": sender_contact_ref,
-                    "SendersPhone": sender_contact_phone,
-                    "CityRecipient": city_recipient_ref,
-                    "Recipient": recipient_ref,
-                    "RecipientAddress": recipient_address_ref,
-                    "ContactRecipient": recipient_contact_ref,
-                    "RecipientsPhone": recipient_contact_phone
-                }
-            }).json()
-            return result
+        self,
+        pickup_city_ref,
+        sender_ref,
+        sender_address_ref,
+        sender_contact_ref,
+        sender_contact_phone,
+        delivery_city_ref,
+        recipient_ref,
+        recipient_address_ref,
+        recipient_contact_ref,
+        recipient_contact_phone,
+        description_of_content,
+        weight,
+        width,
+        length,
+        height,
+        volume_general,
+        value_of_goods,
+        sender_warehouseindex,  
+        recipient_warehouseindex,  
+    ):
+        options_seat = [
+            {
+            "volumetricVolume": str(volume_general),
+            "volumetricWidth": str(width),
+            "volumetricLength": str(length),
+            "volumetricHeight": str(height),
+            "weight": str(weight)
+        }
+        ]
+
+        # Підготовка властивостей методу
+        method_properties = {
+            "SenderWarehouseIndex": sender_warehouseindex,
+            "RecipientWarehouseIndex": recipient_warehouseindex,
+            "PayerType": "Recipient",
+            "PaymentMethod": "Cash",
+            "CargoType": "Cargo",
+            "VolumeGeneral": str(volume_general),
+            "Weight": str(weight),
+            "ServiceType": "WarehouseWarehouse",
+            "SeatsAmount": "1",
+            "Description": description_of_content,
+            "Cost": str(value_of_goods),
+            "CitySender": pickup_city_ref,
+            "Sender": sender_ref,  
+            "SenderAddress": sender_address_ref,  
+            "ContactSender": sender_contact_ref,  
+            "SendersPhone": sender_contact_phone,  
+            "CityRecipient": delivery_city_ref,
+            "Recipient": recipient_ref,  
+            "RecipientAddress": recipient_address_ref,  
+            "ContactRecipient": recipient_contact_ref,  
+            "RecipientsPhone": recipient_contact_phone,  
+            "OptionsSeat": options_seat
+        }
+
+        result = post(self.api_endpoint, json={
+            "apiKey": self.api_key,
+            "modelName": "InternetDocument",
+            "calledMethod": "save",
+            "methodProperties": method_properties
+        }).json()
+
+        return result
         
 @frappe.whitelist()      
 def get_label(waybill_number):
@@ -547,4 +579,3 @@ def get_tracking_data(waybill_number, delivery_contact):
         raise Exception(f"Error getting tracking data for {waybill_number}: {response.status_code}")
 
     return response.json()
-

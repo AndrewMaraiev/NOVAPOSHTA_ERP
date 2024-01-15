@@ -90,6 +90,11 @@ doctype_js = {
 # Document Events
 # ---------------
 # Hook on document methods and events
+# doc_events = {
+#     "Shipment": {
+#         "before_save": "erpnext_shipping.shipping.before_save"
+#     }
+# }
 
 # doc_events = {
 # 	"*": {
