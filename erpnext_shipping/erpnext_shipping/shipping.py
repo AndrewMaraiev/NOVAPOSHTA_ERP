@@ -68,13 +68,16 @@ def create_shipment(
     value_of_goods,
     service_info='WarehouseWarehouse'
 ):
-    
-    
     shipment_info = {}
     pickup_warehouse_object = frappe.get_doc('NovaPoshta Warehouse', pickup_warehouse_name)
     pickup_warehouse_ref = pickup_warehouse_object.ref 
     delivery_warehouse_object = frappe.get_doc('NovaPoshta Warehouse', delivery_warehouse_name)
     delivery_warehouse_ref = delivery_warehouse_object.ref
+
+    # Отримання значень sender_warehouseindex та recipient_warehouseindex
+    sender_warehouseindex = pickup_warehouse_object.warehouseindex
+    recipient_warehouseindex = delivery_warehouse_object.warehouseindex
+
     pickup_contact = None
     delivery_contact = None
 
@@ -96,14 +99,14 @@ def create_shipment(
                 pickup_date=pickup_date,
                 value_of_goods=value_of_goods,
                 service_info=service_info,
+                sender_warehouseindex=sender_warehouseindex,
+                recipient_warehouseindex=recipient_warehouseindex
             )
         except Exception as e:
             frappe.log_error(str(e))
             frappe.msgprint(f'Failed to create shipment for NovaPoshta: {str(e)}')
             raise e
-            
-            return {}
-        
+
         if not shipment_info:
             frappe.msgprint('Failed to create shipment for NovaPoshta')
         else:
@@ -111,6 +114,7 @@ def create_shipment(
             frappe.db.set_value('Shipment', shipment, 'waybill_ref', shipment_info.get('waybill_ref'))
             frappe.db.set_value('Shipment', shipment, 'status', 'Booked')
             frappe.msgprint('Shipment created for NovaPoshta')
+
     return shipment_info
 
 

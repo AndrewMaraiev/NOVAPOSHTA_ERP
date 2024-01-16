@@ -13,7 +13,8 @@
   "ref",
   "description",
   "city",
-  "area"
+  "area",
+  "warehouseindex"
  ],
  "fields": [
   {
@@ -49,11 +50,16 @@
    "fieldname": "area",
    "fieldtype": "Data",
    "label": "Area"
+  },
+  {
+   "fieldname": "warehouseindex",
+   "fieldtype": "Data",
+   "label": "WarehouseIndex"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-14 18:16:49.475292",
+ "modified": "2024-01-10 13:07:56.123578",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "NovaPoshta Warehouse",
