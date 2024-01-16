@@ -1,103 +1,165 @@
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
-
+import frappe
 
 def after_install():
-    custom_fields = {
-        "Shipment": [
-            # ... other custom fields ...
-
+    shipment_form = dict(
+        title="Shipment Form",
+        route="shipment-form",
+        published=1,
+        doc_type="Shipment Form",
+        module="ERPNext Shipping",
+        is_standard= 0,
+        login_required= 1,
+        allow_multiple= 0,
+        allow_edit=1,
+        allow_delete=0,
+        anonymous=0,
+        allow_comments=0,
+        show_attachments=0,
+        allow_incomplete=0,
+        max_attachment_size=0,
+        show_list=1,
+        show_sidebar=0,
+        button_label="Зберегти",
+        success_title="Return to Cart",
+        success_url="/cart",
+        client_script="""frappe.web_form.after_load = () => {\n    if (window.location.pathname.endsWith(\/new\) && frappe.session.user) {\n        frappe.web_form.set_value('full_name', frappe.session.user)\n    }\n}\n""",
+        doctype="Web Form",
+        web_form_fields=[
             dict(
-                fieldname="section_break_bpdvz",
-                fieldtype="Section Break",
-                label="NovaPoshta specific",
-                insert_after="update_tracking",
-                mandatory_depends_on="eval: doc.service_provider == 'NovaPoshta'",
-            ),
-
-            dict(
-                fieldname="pickup_city",
-                label="Pickup city",
-                fieldtype="Link",
-                options="NovaPoshta cities",
-                depends_on="eval: doc.service_provider == 'NovaPoshta'",
-                insert_after="section_break_bpdvz",
-                mandatory_depends_on="eval: doc.service_provider == 'NovaPoshta'",
-            ),
-            
-            dict(
-                fieldname="pickup_warehouse",
-                label="Pickup Warehouse",
-                fieldtype="Link",
-                options="NovaPoshta Warehouse",
-                depends_on="eval: doc.service_provider == 'NovaPoshta'",
-                insert_after="pickup_city",
-                mandatory_depends_on="eval: doc.service_provider == 'NovaPoshta'",
-            ),
-            
-            dict(
-                fieldname="sender_full_name",
-                label="Sender full name",
+                fieldname="full_name",
                 fieldtype="Data",
-                depends_on="eval: doc.service_provider == 'NovaPoshta'",
-                insert_after="pickup_warehouse",
-                mandatory_depends_on="eval: doc.service_provider == 'NovaPoshta'",
+                label="Full Name",
+                idx=1,
+                allow_read_on_all_link_options=0,
+                read_only=0,
+                show_in_filter=0,
+                hidden=0,
+                max_length=0,
+                max_value=0,
+                parent="shipment-form",
+                parentfield="web_form_fields",
+                parenttype="Web Form",
+                doctype="Web Form Field"
             ),
-            
             dict(
-                fieldname="sender_phone",
-                label="Sender phone",
-                fieldtype="Data",
-                depends_on="eval: doc.service_provider == 'NovaPoshta'",
-                insert_after="sender_full_name",
-                mandatory_depends_on="eval: doc.service_provider == 'NovaPoshta'",
+                fieldname="payment_method",
+                fieldtype="Link",
+                idx=2,
+                label="Payment method",
+                allow_read_on_all_link_options=1,
+                reqd=0,
+                read_only=0,
+                show_in_filter=0,
+                hidden=0,
+                options="Payment Methods",
+                parent="shipment-form",
+                parentfield="web_form_fields",
+                parenttype="Web Form",
+                doctype="Web Form Field"
             ),
-            
             dict(
-                fieldname="column_break_et3lj",
                 fieldtype="Column Break",
-                insert_after="sender_phone",
-                mandatory_depends_on="eval: doc.service_provider == 'NovaPoshta'",
+                idx=3,
+                parent="shipment-form",
+                parentfield="web_form_fields",
+                parenttype="Web Form",
+                doctype="Web Form Field"
             ),
-
             dict(
-                fieldname="delivery_to_city",
-                label="Delivery to City",
+                idx= 4,
+                fieldname="phone",
+                fieldtype="Data",
+                label="Phone",
+                allow_read_on_all_link_options=0,
+                reqd=1,
+                read_only=0,
+                show_in_filter=0,
+                hidden=0,
+                options="Phone",
+                max_length=20,
+                parent="shipment-form",
+                parentfield="web_form_fields",
+                parenttype="Web Form",
+                doctype="Web Form Field"
+            ),
+            dict(
+                idx= 5,
+                fieldname="email",
+                fieldtype="Data",
+                label="Email",
+                allow_read_on_all_link_options=0,
+                reqd=1,
+                read_only=0,
+                show_in_filter=0,
+                hidden=0,
+                options="Email",
+                max_length=0,
+                max_value=0,
+                parent="shipment-form",
+                parentfield="web_form_fields",
+                parenttype="Web Form",
+                doctype="Web Form Field"
+            ),
+            dict(
+                idx=6,
+                fieldtype="Section Break",
+                label="Shipping Address",
+                parent="shipment-form",
+                parentfield="web_form_fields",
+                parenttype="Web Form",
+                doctype="Web Form Field"
+            ),
+            dict(
+                idx= 7,
+                fieldname="provider",
+                fieldtype="Select",
+                label="Shipment Provider",
+                allow_read_on_all_link_options= 0,
+                reqd= 1,
+                read_only= 1,
+                hidden=0,
+                options="NovaPoshta",
+                max_length=0,
+                max_value=0,
+                default="NovaPoshta",
+                parent="shipment-form",
+                parentfield="web_form_fields",
+                parenttype="Web Form",
+                doctype="Web Form Field"
+            ),
+            dict(
+                idx= 8,
+                fieldname="city",
                 fieldtype="Link",
+                label="City",
+                allow_read_on_all_link_options=0,
+                reqd=1,
+                read_only=0,
+                show_in_filter=0,
+                hidden=0,
                 options="NovaPoshta cities",
-                depends_on="eval: doc.service_provider == 'NovaPoshta'",
-                insert_after="column_break_et3lj",
-                mandatory_depends_on="eval: doc.service_provider == 'NovaPoshta'",
+                parent="shipment-form",
+                parentfield="web_form_fields",
+                parenttype="Web Form",
+                doctype="Web Form Field"
             ),
-            
             dict(
-                fieldname="delivery_to_warehouse",
-                label="Delivery to Warehouse",
+                idx= 9,
+                fieldname="warehouse",
                 fieldtype="Link",
+                label="Warehouse",
+                allow_read_on_all_link_options=0,
+                reqd=1,
+                read_only=0,
+                show_in_filter=0,
+                hidden=0,
                 options="NovaPoshta Warehouse",
-                depends_on="eval: doc.service_provider == 'NovaPoshta'",
-                insert_after="delivery_to_city",
-                mandatory_depends_on="eval: doc.service_provider == 'NovaPoshta'",
-            ),    
-            
-            dict(
-                fieldname="recipient_full_name",
-                label="Recipient full name",
-                fieldtype="Data",
-                depends_on="eval: doc.service_provider == 'NovaPoshta'",
-                insert_after="delivery_to_warehouse",
-                mandatory_depends_on="eval: doc.service_provider == 'NovaPoshta'",
-            ),
-            
-            dict(
-                fieldname="recipient_phone",
-                label="Recipient phone",
-                fieldtype="Data",
-                depends_on="eval: doc.service_provider == 'NovaPoshta'",
-                insert_after="recipient_full_name",
-                mandatory_depends_on="eval: doc.service_provider == 'NovaPoshta'",
-            ),
-            
-        ],
-    }
-
-    create_custom_fields(custom_fields)
+                parent="shipment-form",
+                parentfield="web_form_fields",
+                parenttype="Web Form",
+                doctype="Web Form Field"
+            )
+        ])
+    form = frappe.get_doc(shipment_form)
+    form.save()

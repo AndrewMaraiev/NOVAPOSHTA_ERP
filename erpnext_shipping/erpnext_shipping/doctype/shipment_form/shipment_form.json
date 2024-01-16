@@ -9,6 +9,7 @@
  "engine": "InnoDB",
  "field_order": [
   "default",
+  "provider",
   "full_name",
   "phone",
   "area",
@@ -70,14 +71,22 @@
    "label": "Email",
    "options": "Email",
    "reqd": 1
+  },
+  {
+   "default": "NovaPoshta",
+   "fieldname": "provider",
+   "fieldtype": "Select",
+   "label": "Shipment Provider",
+   "options": "NovaPoshta",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-08 18:03:17.294247",
+ "modified": "2024-01-10 16:07:01.925530",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
- "name": "NovaPoshta Shipment Form",
+ "name": "Shipment Form",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
