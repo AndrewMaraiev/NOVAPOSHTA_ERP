@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{full_name}-{#####}",
+ "autoname": "format:Shipment-Form-{######}",
  "creation": "2024-01-02 17:01:12.639958",
  "default_view": "List",
  "doctype": "DocType",
@@ -83,7 +83,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-10 16:07:01.925530",
+ "modified": "2024-01-17 12:47:04.889722",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "Shipment Form",
