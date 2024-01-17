@@ -23,7 +23,7 @@ def after_install():
         button_label="Зберегти",
         success_title="Return to Cart",
         success_url="/cart",
-        client_script="""frappe.web_form.after_load = () => {\n    if (window.location.pathname.endsWith(\/new\) && frappe.session.user) {\n        frappe.web_form.set_value('full_name', frappe.session.user)\n    }\n}\n""",
+        client_script="""frappe.web_form.after_load = () => {\n    if (window.location.pathname.endsWith("/new") && frappe.session.user) {\n        frappe.web_form.set_value('full_name', frappe.session.user)\n    }\n}\n""",
         doctype="Web Form",
         web_form_fields=[
             dict(
