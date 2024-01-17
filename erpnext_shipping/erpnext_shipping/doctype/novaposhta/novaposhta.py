@@ -23,7 +23,7 @@ from frappe.utils.password import get_decrypted_password
 NOVAPOSHTA_PROVIDER = "NovaPoshta"
 
 
-class NovaPoshta(Document):
+class NovaPoshta(Document):    
     @whitelist()
     def get_areas(self):
         client = NovaPoshtaApi(api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key"))
@@ -132,6 +132,9 @@ class NovaPoshta(Document):
         self.get_areas()
         self.get_cities()
         self.get_warehouses()
+        
+    def get_active_novaposhta():
+        return frappe.db.get_value("NovaPoshta", "NovaPoshta", "enabled")    
 
     def validate(self):
         # Перевірка, чи об'єкт NovaPoshta налаштований та активний
@@ -377,7 +380,14 @@ class NovaPoshtaUtils:
         height = shipment_parcel.get("height")        
         VolumeGeneral = ((length /100) * (width /100) * (height /100))
         
-        
+        backward_delivery_data = [
+        {
+            "PayerType": 'Recipient',
+            "CargoType": "Money",
+            "RedeliveryString": "1488"
+        }
+    ]
+
         waybill = self.create_express_waybill(
             pickup_city_ref = pickup_city_ref, 
             sender_ref = pickup_counterparty_ref,
@@ -397,9 +407,10 @@ class NovaPoshtaUtils:
             recipient_warehouseindex=recipient_warehouseindex,
             width = width,
             length = length,
-            height = height
+            height = height,
+            backward_delivery_data=backward_delivery_data
         )
-            
+                
         print(waybill)
 
         waybill_ref = waybill['data'][0]['Ref']
@@ -488,16 +499,18 @@ class NovaPoshtaUtils:
         volume_general,
         value_of_goods,
         sender_warehouseindex,  
-        recipient_warehouseindex,  
+        recipient_warehouseindex,
+        backward_delivery_data=None,  
     ):
+        
         options_seat = [
             {
-            "volumetricVolume": str(volume_general),
-            "volumetricWidth": str(width),
-            "volumetricLength": str(length),
-            "volumetricHeight": str(height),
-            "weight": str(weight)
-        }
+                "volumetricVolume": str(volume_general),
+                "volumetricWidth": str(width),
+                "volumetricLength": str(length),
+                "volumetricHeight": str(height),
+                "weight": str(weight)
+            }
         ]
 
         # Підготовка властивостей методу
@@ -523,7 +536,8 @@ class NovaPoshtaUtils:
             "RecipientAddress": recipient_address_ref,  
             "ContactRecipient": recipient_contact_ref,  
             "RecipientsPhone": recipient_contact_phone,  
-            "OptionsSeat": options_seat
+            "OptionsSeat": options_seat,
+            "BackwardDeliveryData": backward_delivery_data,  
         }
 
         result = post(self.api_endpoint, json={
