@@ -302,8 +302,9 @@ class NovaPoshtaUtils:
         service_info='WarehouseWarehouse',
         sender_warehouseindex=None,
         recipient_warehouseindex=None,
+        payment_method=None,
     ):
-        
+        print('*-*'*20, payment_method)
 
         if isinstance(shipment_parcel, str):
             try:
@@ -380,13 +381,21 @@ class NovaPoshtaUtils:
         height = shipment_parcel.get("height")        
         VolumeGeneral = ((length /100) * (width /100) * (height /100))
         
-        backward_delivery_data = [
-        {
-            "PayerType": 'Recipient',
-            "CargoType": "Money",
-            "RedeliveryString": "1488"
-        }
-    ]
+        backward_delivery_data = None
+
+        if payment_method and payment_method == "in_department":
+            # Додається інформація про зворотню доставку грошей
+            backward_delivery_data = [
+                {
+                    "PayerType": 'Recipient',
+                    "CargoType": "Money",
+                    "RedeliveryString": value_of_goods
+                }
+            ]
+
+        elif payment_method == "card":
+            # For 'Card' payment method, no backward delivery data is needed
+            backward_delivery_data = None
 
         waybill = self.create_express_waybill(
             pickup_city_ref = pickup_city_ref, 
@@ -537,8 +546,9 @@ class NovaPoshtaUtils:
             "ContactRecipient": recipient_contact_ref,  
             "RecipientsPhone": recipient_contact_phone,  
             "OptionsSeat": options_seat,
-            "BackwardDeliveryData": backward_delivery_data,  
         }
+        if backward_delivery_data:
+            method_properties["BackwardDeliveryData"] =  backward_delivery_data
 
         result = post(self.api_endpoint, json={
             "apiKey": self.api_key,
