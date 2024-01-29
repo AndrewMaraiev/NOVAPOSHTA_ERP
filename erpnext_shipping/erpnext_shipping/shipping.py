@@ -82,6 +82,18 @@ def create_shipment(
     delivery_contact = None
 
     shipment_doc = frappe.get_doc('Shipment', shipment)
+    
+    dn = shipment_doc.shipment_delivery_note
+    payment_method = None
+    if dn is not None and len(dn) > 0:
+        dn = dn[0]
+        dn = frappe.get_doc('Delivery Note', {'name': dn.delivery_note})
+        
+        form = frappe.get_doc('Shipment Form', {'name': dn.custom_shipment_form})
+        
+        payment_method = form.payment_method
+ 
+
 
     if shipment_doc.carrier_service == 'NovaPoshta':
         novaposhta = NovaPoshtaUtils()
@@ -100,7 +112,8 @@ def create_shipment(
                 value_of_goods=value_of_goods,
                 service_info=service_info,
                 sender_warehouseindex=sender_warehouseindex,
-                recipient_warehouseindex=recipient_warehouseindex
+                recipient_warehouseindex=recipient_warehouseindex,
+                payment_method=payment_method
             )
         except Exception as e:
             frappe.log_error(str(e))

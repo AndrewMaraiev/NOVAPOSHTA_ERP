@@ -11,7 +11,7 @@
   "doctype": "Payment Methods",
   "name": "in_department",
   "payment_id": "in_department",
-  "payment_method_name": "In Department"
+  "payment_method_name": "InDepartment"
  },
  {
   "docstatus": 0,
