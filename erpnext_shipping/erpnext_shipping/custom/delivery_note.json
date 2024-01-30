@@ -279,7 +279,7 @@
    "insert_after": "sender_full_name",
    "is_system_generated": 0,
    "is_virtual": 0,
-   "label": " Sender phone",
+   "label": "Sender phone",
    "length": 0,
    "mandatory_depends_on": "",
    "modified": "2023-12-11 15:17:56.941328",
