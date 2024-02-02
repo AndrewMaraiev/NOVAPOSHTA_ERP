@@ -6,11 +6,15 @@
  "engine": "InnoDB",
  "field_order": [
   "enabled",
-  "api_id",
   "api_key",
   "get_areas",
   "get_cities",
-  "get_warehouses"
+  "get_warehouses",
+  "section_break1",
+  "pickup_city",
+  "pickup_warehouse",
+  "sender_full_name",
+  "sender_phone"
  ],
  "fields": [
   {
@@ -40,11 +44,39 @@
    "in_list_view": 1,
    "label": "API key",
    "reqd": 1
+  },
+  {
+   "fieldname": "section_break1",
+   "fieldtype": "Section Break",
+   "label": "Sender Defaults"
+  },
+  {
+   "fieldname": "pickup_city",
+   "fieldtype": "Link",
+   "label": "Pickup City",
+   "options": "NovaPoshta cities"
+  },
+  {
+   "fieldname": "pickup_warehouse",
+   "fieldtype": "Link",
+   "label": "Pickup Warehouse",
+   "options": "NovaPoshta Warehouse"
+  },
+  {
+   "fieldname": "sender_full_name",
+   "fieldtype": "Data",
+   "label": "Sender Full Name"
+  },
+  {
+   "fieldname": "sender_phone",
+   "fieldtype": "Data",
+   "label": " Sender Phone",
+   "options": "Phone"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2023-11-15 16:51:01.303722",
+ "modified": "2024-02-02 13:32:41.257518",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "NovaPoshta",
