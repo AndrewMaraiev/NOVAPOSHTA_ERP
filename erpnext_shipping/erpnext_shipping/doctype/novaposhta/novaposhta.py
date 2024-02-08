@@ -21,8 +21,6 @@ from frappe.utils.password import get_decrypted_password
 
 
 NOVAPOSHTA_PROVIDER = "NovaPoshta"
-
-
 class NovaPoshta(Document):    
     @whitelist()
     def get_areas(self):
@@ -139,7 +137,29 @@ class NovaPoshta(Document):
     def validate(self):
         # Перевірка, чи об'єкт NovaPoshta налаштований та активний
         if not NovaPoshta.get_active_novaposhta():
-            frappe.throw(_("Please configure and activate NovaPoshta integration first"))
+            frappe.throw(_("Please configure and activate NovaPoshta integration first"))   
+            
+    @whitelist()
+    def search_settlements(self, city_name, limit=50, page=1):
+        client = NovaPoshtaApi(api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key"))
+        settlements = client.address.search_settlements(city_name=city_name, limit=limit, page=page)
+        settlements_data = settlements.json().get('data', [])
+        return settlements_data
+
+    @whitelist()
+    def search_settlement_streets(self, street_name, settlement_ref, limit=50):
+        client = NovaPoshtaApi(api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key"))
+        streets = client.address.search_settlement_streets(street_name=street_name, settlement_ref=settlement_ref, limit=limit)
+        streets_data = streets.json().get('data', [])
+        return streets_data
+    
+    @whitelist()
+    def search_settlements_and_streets(self, city_name, street_name):
+        settlements = self.search_settlements(city_name=city_name)
+        streets = []
+        if settlements:
+            streets = self.search_settlement_streets(street_name=street_name, settlement_ref=settlements[0].get('Ref'))
+        return {'settlements': settlements, 'streets': streets}
     
 class NovaPoshtaUtils:
     def __init__(self, api_key: str = None):
@@ -180,8 +200,7 @@ class NovaPoshtaUtils:
         width = shipment_parcel[0].get("width")
         height = shipment_parcel[0].get("height")
         VolumeGeneral = (length * width * height) / 4000
-
-             
+        
         delivery_price_data = self.calculate_delivery_price(
             city_sender=pickup_city_ref,
             city_recipient=delivery_city_ref,
@@ -206,7 +225,41 @@ class NovaPoshtaUtils:
         
         return [service_data]
     
+    def get_counterparty_addresses(self, ref, counterparty_property):
+        body = {
+            "apiKey": self.api_key,
+            "modelName": "Counterparty",
+            "calledMethod": "getCounterpartyAddresses",
+            "methodProperties": {
+                "Ref": ref,
+                "CounterpartyProperty": counterparty_property
+            }
+        }
 
+        response = post(self.api_endpoint, json=body)
+        
+        if response.status_code == 200:
+            return response.json().get('data', [])
+        else:
+            raise Exception(f"Failed to get counterparty addresses: {response.status_code}")
+        
+    def is_payment_control_available(self, city_ref):
+        body = {
+            "apiKey": self.api_key,
+            "modelName": "InternetDocument",
+            "calledMethod": "getDocumentDeliveryDate",
+            "methodProperties": {
+                "CitySender": city_ref
+            }
+        }
+        response = post(self.api_endpoint, json=body)
+        data = response.json()
+
+        if data.get('success') and data.get('data'):
+            return data.get('data')[0].get('AvailableService').get('isControlledBySender')
+
+        return False    
+    
     def get_novaposhta_shipping_rates(self, args):
         novaposhta = NovaPoshtaUtils()
         shipment_parcel_data = args.get('shipment_parcel')
@@ -285,7 +338,7 @@ class NovaPoshtaUtils:
         data = response.json()
         data = data["data"]
         return data[0]["Ref"]
-
+    
     def create_shipment(
         self,
         pickup_city_ref,
@@ -303,9 +356,9 @@ class NovaPoshtaUtils:
         sender_warehouseindex=None,
         recipient_warehouseindex=None,
         payment_method=None,
+        sender_EDRPOU=None,
+        
     ):
-        print('*-*'*20, payment_method)
-
         if isinstance(shipment_parcel, str):
             try:
                 shipment_parcel = json.loads(shipment_parcel)
@@ -326,9 +379,12 @@ class NovaPoshtaUtils:
                 "Page": "1"
             }
         }).json()
-        
+       
         pickup_counterparty_ref = sender['data'][0]['Ref']
         print(pickup_counterparty_ref)
+        pprint(sender)
+        sender_EDRPOU = sender['data'][0]['EDRPOU']
+        print(sender_EDRPOU)
 
         recipient = post(self.api_endpoint, json={
             "apiKey": self.api_key,
@@ -345,9 +401,8 @@ class NovaPoshtaUtils:
         sender_contact = self.get_counterparty_contacts(pickup_counterparty_ref)[0]
         sender_contact_ref = sender_contact['Ref']
         sender_phone = sender_contact['Phones']
-    
         first, last, middle = recipient_full_name.split(' ')
-
+        
         recipient_contact = self.find_contact_by_full_name(
             recipient_contacts,
             last_name = last,
@@ -370,8 +425,8 @@ class NovaPoshtaUtils:
             if not recipient_contact:
                 print('Failed to create recipient contact')
                 raise Exception("Failed to create recipient contact")
-        recipient_contact_person_ref = recipient_contact['Ref']
-        recipient_contact_person_phone = recipient_contact['Phones']
+        recipient_contact_person_ref = recipient_contact["ContactPerson"]["data"][0]['Ref']
+        recipient_contact_person_phone = recipient_contact.get("Phones", recipient_phone)
         
         print('Create waybill')
         print(shipment_parcel)
@@ -381,13 +436,13 @@ class NovaPoshtaUtils:
         height = shipment_parcel.get("height")        
         VolumeGeneral = ((length /100) * (width /100) * (height /100))
         
-        backward_delivery_data = None
+        afterpayment_on_goods_cost = None
 
         if payment_method and payment_method == "in_department":
             # Додається інформація про зворотню доставку грошей
-            backward_delivery_data = [
+            afterpayment_on_goods_cost = [
                 {
-                    "PayerType": 'Recipient',
+                    "PayerType": 'ThirdPerson',
                     "CargoType": "Money",
                     "RedeliveryString": value_of_goods
                 }
@@ -395,7 +450,7 @@ class NovaPoshtaUtils:
 
         elif payment_method == "card":
             # For 'Card' payment method, no backward delivery data is needed
-            backward_delivery_data = None
+            afterpayment_on_goods_cost = None
 
         waybill = self.create_express_waybill(
             pickup_city_ref = pickup_city_ref, 
@@ -417,10 +472,12 @@ class NovaPoshtaUtils:
             width = width,
             length = length,
             height = height,
-            backward_delivery_data=backward_delivery_data
+            afterpayment_on_goods_cost=value_of_goods,
+            sender_EDRPOU = sender['data'][0]['EDRPOU'],
+            
         )
                 
-        print(waybill)
+        pprint(waybill)
 
         waybill_ref = waybill['data'][0]['Ref']
         waybill_number = waybill['data'][0]['IntDocNumber']
@@ -483,7 +540,10 @@ class NovaPoshtaUtils:
                 "CounterpartyProperty": "Recipient"
             }
         }).json()
+        print(result)
+        
         if 'data' in result and result['data']:
+            
             return result['data'][0]
         else:
             raise Exception("Failed to create recipient contact")
@@ -507,11 +567,11 @@ class NovaPoshtaUtils:
         height,
         volume_general,
         value_of_goods,
-        sender_warehouseindex,  
+        sender_warehouseindex,
         recipient_warehouseindex,
-        backward_delivery_data=None,  
+        afterpayment_on_goods_cost=None,
+        sender_EDRPOU=None,
     ):
-        
         options_seat = [
             {
                 "volumetricVolume": str(volume_general),
@@ -522,7 +582,6 @@ class NovaPoshtaUtils:
             }
         ]
 
-        # Підготовка властивостей методу
         method_properties = {
             "SenderWarehouseIndex": sender_warehouseindex,
             "RecipientWarehouseIndex": recipient_warehouseindex,
@@ -536,19 +595,22 @@ class NovaPoshtaUtils:
             "Description": description_of_content,
             "Cost": str(value_of_goods),
             "CitySender": pickup_city_ref,
-            "Sender": sender_ref,  
-            "SenderAddress": sender_address_ref,  
-            "ContactSender": sender_contact_ref,  
-            "SendersPhone": sender_contact_phone,  
+            "Sender": sender_ref,
+            "SenderAddress": sender_address_ref,
+            "ContactSender": sender_contact_ref,
+            "SendersPhone": sender_contact_phone,
             "CityRecipient": delivery_city_ref,
-            "Recipient": recipient_ref,  
-            "RecipientAddress": recipient_address_ref,  
-            "ContactRecipient": recipient_contact_ref,  
-            "RecipientsPhone": recipient_contact_phone,  
+            "Recipient": recipient_ref,
+            "RecipientAddress": recipient_address_ref,
+            "ContactRecipient": recipient_contact_ref,
+            "RecipientsPhone": recipient_contact_phone,
             "OptionsSeat": options_seat,
+            "EDRPOU": sender_EDRPOU,
         }
-        if backward_delivery_data:
-            method_properties["BackwardDeliveryData"] =  backward_delivery_data
+
+        if afterpayment_on_goods_cost:
+            # Додайте параметр "AfterpaymentOnGoodsCost" з відповідним значенням
+            method_properties["AfterpaymentOnGoodsCost"] = afterpayment_on_goods_cost
 
         result = post(self.api_endpoint, json={
             "apiKey": self.api_key,
@@ -558,7 +620,7 @@ class NovaPoshtaUtils:
         }).json()
 
         return result
-        
+                
 @frappe.whitelist()      
 def get_label(waybill_number):
     api_key = get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
@@ -566,40 +628,12 @@ def get_label(waybill_number):
 
     html_print_url = f'{api_endpoint}/orders/printMarking100x100/orders[]/{waybill_number}/type/html/apiKey/{api_key}/zebra'
 
-    # Виконання запиту на отримання HTML-файлу з маркуванням
-    response = requests.post(html_print_url)
+    # Виконання запиту GET для отримання HTML етикетки
+    response = requests.get(html_print_url)
 
     if response.status_code == 200:
-        # Повернення HTML-файлу з маркуванням
-        return response.text
+        # Повертається HTML код етикетки
+        return response.content.decode('utf-8')
     else:
-        # Якщо отримання HTML не вдалося, викидаємо виняток
-        raise Exception('Failed to retrieve label HTML')
-
-@frappe.whitelist() 
-def get_tracking_data(waybill_number, delivery_contact):
-    api_endpoint = "https://api.novaposhta.ua/v2.0/json/"
-
-    api_key = get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
-
-    body = {
-        "apiKey": api_key,
-        "modelName": "TrackingDocument",
-        "calledMethod": "getStatusDocuments",
-        "methodProperties": {
-            "Documents": [
-                {
-                    "DocumentNumber": waybill_number,
-                    "Phone": delivery_contact
-                }
-            ]
-        }
-    }
-
-    response = requests.post(api_endpoint, json=body)
-    pprint(requests)
-
-    if response.status_code != 200:
-        raise Exception(f"Error getting tracking data for {waybill_number}: {response.status_code}")
-
-    return response.json()
+        # У випадку невдалого запиту, викидається виключення
+        response.raise_for_status()

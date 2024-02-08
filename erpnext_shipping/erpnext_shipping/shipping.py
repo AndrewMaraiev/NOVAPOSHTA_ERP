@@ -113,7 +113,8 @@ def create_shipment(
                 service_info=service_info,
                 sender_warehouseindex=sender_warehouseindex,
                 recipient_warehouseindex=recipient_warehouseindex,
-                payment_method=payment_method
+                payment_method=payment_method,
+                
             )
         except Exception as e:
             frappe.log_error(str(e))
