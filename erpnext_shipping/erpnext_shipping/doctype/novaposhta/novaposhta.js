@@ -11,7 +11,7 @@ frappe.ui.form.on('NovaPoshta', {
 	get_cities: function(frm){
 		frm.call('get_cities')
 	},
-	pickup_city : function(frm){
+	pickup_city: function(frm){
 		frm.set_query('pickup_warehouse', function(doc) {
 			return {
 				filters: {'city': doc.pickup_city}

@@ -83,7 +83,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-17 12:47:04.889722",
+ "modified": "2024-02-08 16:31:57.374637",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "Shipment Form",
@@ -103,7 +103,9 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "full_name"
 }
