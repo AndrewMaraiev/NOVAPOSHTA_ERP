@@ -10,7 +10,12 @@
   "get_areas",
   "get_cities",
   "get_warehouses",
-  "get_waybill"
+  "get_waybill",
+  "section_break1",
+  "pickup_city",
+  "pickup_warehouse",
+  "sender_full_name",
+  "sender_phone"
  ],
  "fields": [
   {
@@ -45,6 +50,34 @@
    "fieldname": "get_waybill",
    "fieldtype": "Button",
    "label": "get waybill"
+  },
+  {
+   "fieldname": "section_break1",
+   "fieldtype": "Section Break",
+   "label": "Sender Defaults"
+  },
+  {
+   "fieldname": "pickup_city",
+   "fieldtype": "Link",
+   "label": "Pickup City",
+   "options": "NovaPoshta cities"
+  },
+  {
+   "fieldname": "pickup_warehouse",
+   "fieldtype": "Link",
+   "label": "Pickup Warehouse",
+   "options": "NovaPoshta Warehouse"
+  },
+  {
+   "fieldname": "sender_full_name",
+   "fieldtype": "Data",
+   "label": "Sender Full Name"
+  },
+  {
+   "fieldname": "sender_phone",
+   "fieldtype": "Data",
+   "label": " Sender Phone",
+   "options": "Phone"
   }
  ],
  "issingle": 1,
