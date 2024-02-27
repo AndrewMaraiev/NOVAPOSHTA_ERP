@@ -16,94 +16,85 @@
   "city",
   "warehouse",
   "payment_method",
-  "email"
+  "email",
+  "delivery_type"
  ],
  "fields": [
-  {
-   "default": "0",
-   "fieldname": "default",
-   "fieldtype": "Check",
-   "label": "Default Shipment"
-  },
-  {
-   "fieldname": "area",
-   "fieldtype": "Link",
-   "label": "Area",
-   "options": "NovaPoshta areas"
-  },
-  {
-   "fieldname": "city",
-   "fieldtype": "Link",
-   "label": "City",
-   "options": "NovaPoshta cities"
-  },
-  {
-   "fieldname": "warehouse",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Warehouse",
-   "options": "NovaPoshta Warehouse",
-   "reqd": 1
-  },
-  {
-   "fieldname": "full_name",
-   "fieldtype": "Data",
-   "label": "Full Name",
-   "reqd": 1
-  },
-  {
-   "fieldname": "phone",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Phone",
-   "options": "Phone",
-   "reqd": 1
-  },
-  {
-   "fieldname": "payment_method",
-   "fieldtype": "Link",
-   "label": "Payment method",
-   "options": "Payment Methods"
-  },
-  {
-   "fieldname": "email",
-   "fieldtype": "Data",
-   "label": "Email",
-   "options": "Email",
-   "reqd": 1
-  },
-  {
-   "default": "NovaPoshta",
-   "fieldname": "provider",
-   "fieldtype": "Select",
-   "label": "Shipment Provider",
-   "options": "NovaPoshta",
-   "reqd": 1
-  }
- ],
- "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2024-01-17 12:47:04.889722",
- "modified_by": "Administrator",
- "module": "ERPNext Shipping",
- "name": "Shipment Form",
- "naming_rule": "Expression",
- "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  }
- ],
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": []
+    {
+      "default": "NovaPoshta",
+      "fieldname": "provider",
+      "fieldtype": "Select",
+      "label": "Shipment Provider",
+      "options": "NovaPoshta",
+      "reqd": 1
+    },
+    {
+      "fieldname": "delivery_type",
+      "fieldtype": "Select",
+      "label": "Delivery type",
+      "options": "Warehouse\nAddress delivery",
+      "reqd": 1
+    },
+    {
+      "fieldname": "full_name",
+      "fieldtype": "Data",
+      "label": "Full Name",
+      "reqd": 1
+    },
+    {
+      "fieldname": "phone",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Phone",
+      "options": "Phone",
+      "reqd": 1
+    },
+    {
+      "fieldname": "area",
+      "fieldtype": "Link",
+      "label": "Area",
+      "options": "NovaPoshta areas"
+    },
+    {
+      "fieldname": "city",
+      "fieldtype": "Link",
+      "label": "City",
+      "options": "NovaPoshta cities"
+    },
+    {
+      "fieldname": "payment_method",
+      "fieldtype": "Link",
+      "label": "Payment method",
+      "options": "Payment Methods"
+    },
+    {
+      "fieldname": "warehouse",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Warehouse",
+      "options": "NovaPoshta Warehouse",
+      "reqd": 1
+    },
+    {
+      "fieldname": "street",
+      "fieldtype": "Data",
+      "label": "Street",
+      "depends_on": "eval:doc.delivery_type=='Address delivery'",
+      "reqd": 1
+    },
+    {
+      "fieldname": "house",
+      "fieldtype": "Data",
+      "label": "House",
+      "depends_on": "eval:doc.delivery_type=='Address delivery'",
+      "reqd": 1
+    },
+    {
+      "fieldname": "flat",
+      "fieldtype": "Data",
+      "label": "Flat",
+      "depends_on": "eval:doc.delivery_type=='Address delivery'",
+      "reqd": 1
+    }
+  ]
 }

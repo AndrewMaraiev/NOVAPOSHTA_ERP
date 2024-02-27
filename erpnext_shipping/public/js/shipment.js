@@ -14,7 +14,7 @@ frappe.templates['shipment'] = `
 				<tbody>
 					{% for (var i = 0; i < data.preferred_services.length; i++) { %}
 						<tr id="data-preferred-{{i}}">
-							<td class="service-info" style="width:20%;">{{ data.preferred_services[i] }}</td>
+							<td class="service-info" style="width:20%;">{{ data.preferred_services[i].service_provider }}</td>
 							<td class="service-info" style="width:20%;">{{ data.preferred_services[i].carrier }}</td>
 							<td class="service-info" style="width:40%;">{{ data.preferred_services[i].service_name }}</td>
 							<td class="service-info" style="width:20%;">{{ format_currency(data.preferred_services[i].total_price, "UAH", 2) }}</td>
@@ -96,15 +96,6 @@ frappe.templates['shipment'] = `
 }
 </style>
 `;
-
-// frappe.ui.form.on('Delivery Note', 'pickup_city', function(frm){
-// 	frm.fields_dict.pickup_warehouse.df['filters'] = {city: frm.fields_dict.pickup_city.value};
-// });
-// console.log('HERE')
-
-// frappe.ui.form.on('Delivery Note', 'delivery_to_city', function(frm){
-// 	frm.fields_dict.delivery_to_warehouse.df['filters'] = {city: ["like", "%" + frm.fields_dict.delivery_to_city.value+"%"]};
-// });
 
 frappe.ui.form.on('Shipment', {
 	refresh: function(frm) {
@@ -293,6 +284,7 @@ function getTrackingStatusDescription(statusCode) {
 }
 
 function select_from_available_services(frm, available_services) {
+	// Опрацювання вибору послуги доставки та створення відвантаження...
 	var headers = [ __("Service Provider"), __("Parcel Service"), __("Parcel Service Type"), __("Price"), "" ];
 
 	const arranged_services = available_services.reduce((prev, curr) => {
@@ -339,7 +331,7 @@ function select_from_available_services(frm, available_services) {
 	frm.select_row = function(service_data) {
 		// Check if the 'service_data' object has the 'service_provider' property defined
 		if (service_data.service_provider) {
-			console.log(frm)
+			var delivery_payer = frm.doc.delivery_payer; // Отримання значення поля "Delivery Payer"
 			frappe.call({
 				method: "erpnext_shipping.erpnext_shipping.shipping.create_shipment",
 				freeze: true,
@@ -356,26 +348,27 @@ function select_from_available_services(frm, available_services) {
 					recipient_phone: frm.doc.recipient_phone,
 					description_of_content: frm.doc.description_of_content,
 					pickup_date: frm.doc.pickup_date,
-					value_of_goods: frm.doc.value_of_goods
-			},
-			callback: function(r) {
-				console.log(r);
-				if (!r.exc) {
-					frm.reload_doc();
-					frappe.msgprint({
-						message: __("Shipment {1} has been created with {0}.", [r.message.service_provider, r.message.shipment_id.bold()]),
-						title: __("Shipment Created"),
-						indicator: "green"
-					});
-					frm.events.update_tracking(frm, r.message.service_provider, r.message.shipment_id);
+					value_of_goods: frm.doc.value_of_goods,
+					delivery_payer: delivery_payer //add delivery_payer
+				},
+				callback: function(r) {
+					console.log(r);
+					if (!r.exc) {
+						frm.reload_doc();
+						frappe.msgprint({
+							message: __("Shipment {1} has been created with {0}.", [r.message.service_provider, r.message.shipment_id.bold()]),
+							title: __("Shipment Created"),
+							indicator: "green"
+						});
+						frm.events.update_tracking(frm, r.message.service_provider, r.message.shipment_id);
+					}
 				}
-			}
-		});
-		dialog.hide();
-    } else {
-        // Handle the case when 'service_provider' property is not defined
-        frappe.msgprint(__("Service provider information is missing."));
-    }
-};
+			});
+			dialog.hide();
+		} else {
+			// Handle the case when 'service_provider' property is not defined
+			frappe.msgprint(__("Service provider information is missing."));
+		}
+	};
 	dialog.show();
 }

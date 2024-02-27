@@ -15,5 +15,9 @@ frappe.ui.form.on('NovaPoshta', {
 
 	get_cities : function(frm){
 		frm.call('get_cities')
-		}
+		},
+
+	get_waybill : function(frm){
+		frm.call('get_waybill')
+	}
 });

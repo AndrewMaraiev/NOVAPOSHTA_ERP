@@ -1,0 +1,107 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:tracking_number",
+ "creation": "2024-02-27 09:14:32.205394",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tracking_number",
+  "senders_name",
+  "senders_address",
+  "receivers_name",
+  "receivers_address",
+  "item_description",
+  "quantity",
+  "weight",
+  "redelivery_option",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "tracking_number",
+   "fieldtype": "Data",
+   "label": "Tracking Number",
+   "unique": 1
+  },
+  {
+   "fieldname": "senders_name",
+   "fieldtype": "Data",
+   "label": "Sender's Name"
+  },
+  {
+   "fieldname": "senders_address",
+   "fieldtype": "Data",
+   "label": "Sender's Address"
+  },
+  {
+   "fieldname": "receivers_name",
+   "fieldtype": "Data",
+   "label": "Receiver's Name"
+  },
+  {
+   "fieldname": "receivers_address",
+   "fieldtype": "Data",
+   "label": "Receiver's Address"
+  },
+  {
+   "fieldname": "item_description",
+   "fieldtype": "Data",
+   "label": "Item Description"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Float",
+   "label": "Weight"
+  },
+  {
+   "fieldname": "redelivery_option",
+   "fieldtype": "Data",
+   "label": "Redelivery Option"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "NovaPoshta",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-02-27 14:48:56.510638",
+ "modified_by": "Administrator",
+ "module": "ERPNext Shipping",
+ "name": "NovaPoshta Waybill",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

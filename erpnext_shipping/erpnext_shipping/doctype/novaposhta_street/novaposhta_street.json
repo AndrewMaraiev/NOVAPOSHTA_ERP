@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-26 16:57:30.592865",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "settlement_ref",
+  "settlement_street_ref",
+  "settlement_street_description",
+  "present",
+  "street_type",
+  "street_type_description",
+  "location"
+ ],
+ "fields": [
+  {
+   "fieldname": "settlement_ref",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "SettlementRef",
+   "options": "NovaPoshta cities",
+   "reqd": 1
+  },
+  {
+   "fieldname": "settlement_street_ref",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "SettlementStreetRef",
+   "options": "NovaPoshta cities",
+   "reqd": 1
+  },
+  {
+   "fieldname": "settlement_street_description",
+   "fieldtype": "Data",
+   "label": "SettlementStreetDescription"
+  },
+  {
+   "fieldname": "present",
+   "fieldtype": "Data",
+   "label": "Present"
+  },
+  {
+   "fieldname": "street_type",
+   "fieldtype": "Link",
+   "label": "StreetsType",
+   "options": "NovaPoshta cities"
+  },
+  {
+   "fieldname": "street_type_description",
+   "fieldtype": "Data",
+   "label": "StreetsTypeDescription"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-01-26 16:57:30.592865",
+ "modified_by": "Administrator",
+ "module": "ERPNext Shipping",
+ "name": "NovaPoshta street",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

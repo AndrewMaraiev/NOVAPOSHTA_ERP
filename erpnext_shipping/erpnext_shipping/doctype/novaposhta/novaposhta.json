@@ -6,11 +6,11 @@
  "engine": "InnoDB",
  "field_order": [
   "enabled",
-  "api_id",
   "api_key",
   "get_areas",
   "get_cities",
-  "get_warehouses"
+  "get_warehouses",
+  "get_waybill"
  ],
  "fields": [
   {
@@ -40,11 +40,16 @@
    "in_list_view": 1,
    "label": "API key",
    "reqd": 1
+  },
+  {
+   "fieldname": "get_waybill",
+   "fieldtype": "Button",
+   "label": "get waybill"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2023-11-15 16:51:01.303722",
+ "modified": "2024-02-27 09:22:55.151222",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "NovaPoshta",

@@ -18,7 +18,8 @@ from frappe import whitelist
 
 from decimal import Decimal
 from frappe.utils.password import get_decrypted_password
-
+from datetime import datetime
+from frappe import enqueue
 
 NOVAPOSHTA_PROVIDER = "NovaPoshta"
 class NovaPoshta(Document):    
@@ -76,8 +77,7 @@ class NovaPoshta(Document):
                 })
                 new_doc.save()
 
-            page += 1
-            
+            page += 1   
 
     @whitelist()
     def get_warehouses(self):
@@ -116,8 +116,67 @@ class NovaPoshta(Document):
                 new_doc.save()
 
             page += 1
-            
+    
+    @whitelist()
+    def update_waybill(self):
+        api_key = self.get_password(fieldname="api_key", raise_exception=False)
+        if api_key:
+            self.get_waybill(api_key)
+        else:
+            print("API key is not configured.")
 
+    def on_update(self):
+        enqueue(self.update_waybill)
+
+    @whitelist()
+    def get_waybill(self, api_key):
+        now = datetime.now()
+        date_from = "01.01.2024"
+        date_to = "01.06.2024"
+        api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
+
+
+        data = {
+            "apiKey": api_key,
+            "modelName": "InternetDocument",
+            "calledMethod": "getDocumentList",
+            "methodProperties": {
+                "DateTimeFrom": date_from,
+                "DateTimeTo": date_to,
+                "Page": "1",
+                "GetFullList": "1",
+                "DateTime": now.strftime("%d.%m.%Y"),
+            }
+        }
+
+        response = requests.post("https://api.novaposhta.ua/v2.0/json/", json=data)
+
+        if response.status_code == 200:
+            result = response.json()
+            waybill_list = result.get("data", [])
+
+            for waybill_data in waybill_list:
+                waybill_doc = frappe.new_doc("NovaPoshta Waybill")
+                waybill_doc.update({
+                    "tracking_number": waybill_data.get("IntDocNumber"),
+                    "senders_name": waybill_data.get("SenderContactPerson"),
+                    "senders_address": waybill_data.get("SenderAddressDescription"),
+                    "receivers_name": waybill_data.get("RecipientContactPerson"),
+                    "receivers_address": waybill_data.get("RecipientAddressDescription"),
+                    "item_description": waybill_data.get("Description"),
+                    "quantity": waybill_data.get("CargoType"),
+                    "weight": waybill_data.get("Weight"),
+                    "redelivery_option": waybill_data.get("ServiceType"),
+                    "amended_from": waybill_data.get("DocumentType"),
+                })
+                waybill_doc.insert()
+                
+                pprint(waybill_doc)
+                print('1111'*10)
+                print(waybill_data)
+
+            return result
+        
     @whitelist()
     def update_novaposhta_data(self):
         frappe.enqueue(
@@ -177,7 +236,7 @@ class NovaPoshtaUtils:
                 _("Please enable NovaPoshta Integration in {0}".format(link)),
                 title=_("Mandatory"),
             )
-            
+        
     def get_available_services(
         self,
         pickup_city_ref, 
@@ -191,7 +250,6 @@ class NovaPoshtaUtils:
             "calledMethod" : "getDocumentPrice",
             "apiKey" : self.api_key
         }
-    
         
         headers = {"content-type": "application/json"}
         
@@ -352,131 +410,117 @@ class NovaPoshtaUtils:
         description_of_content,
         pickup_date,
         value_of_goods,
+        delivery_payer=None,
         service_info='WarehouseWarehouse',
         sender_warehouseindex=None,
         recipient_warehouseindex=None,
         payment_method=None,
         sender_EDRPOU=None,
-        
+        backward_delivery_data=None
     ):
         if isinstance(shipment_parcel, str):
             try:
                 shipment_parcel = json.loads(shipment_parcel)
             except json.JSONDecodeError as e:
                 raise Exception("Invalid shipment_parcel JSON format") from e
-            
-        shipment_parcel = shipment_parcel[0]
-        
-        pprint(sender_warehouseindex)
-        pprint(recipient_warehouseindex)
-        
-        sender = post(self.api_endpoint, json={
-            "apiKey": self.api_key,
-            "modelName": "Counterparty",
-            "calledMethod": "getCounterparties",
-            "methodProperties": {
-                "CounterpartyProperty": "Sender",
-                "Page": "1"
-            }
-        }).json()
-       
-        pickup_counterparty_ref = sender['data'][0]['Ref']
-        print(pickup_counterparty_ref)
-        pprint(sender)
-        sender_EDRPOU = sender['data'][0]['EDRPOU']
-        print(sender_EDRPOU)
 
-        recipient = post(self.api_endpoint, json={
-            "apiKey": self.api_key,
-            "modelName": "Counterparty",
-            "calledMethod": "getCounterparties",
-            "methodProperties": {
-                "CounterpartyProperty": "Recipient",
-                "Page": "1"
-            }
-        }).json()
+        shipment_parcel = shipment_parcel[0]
+
+        sender = self.get_sender_counterparty()
+        pickup_counterparty_ref = sender['data'][0]['Ref']
+        sender_EDRPOU = sender['data'][0].get('EDRPOU')
+        sender_type = 'legal' if sender_EDRPOU else 'private'
+
+        recipient = self.get_recipient_counterparty()
         delivery_counterparty_ref = recipient['data'][0]['Ref']
+        recipient_EDRPOU = recipient['data'][0].get('EDRPOU')
 
         recipient_contacts = self.get_counterparty_contacts(delivery_counterparty_ref)
         sender_contact = self.get_counterparty_contacts(pickup_counterparty_ref)[0]
         sender_contact_ref = sender_contact['Ref']
-        sender_phone = sender_contact['Phones']
+        sender_contact_phone = sender_contact['Phones']
         first, last, middle = recipient_full_name.split(' ')
-        
+
         recipient_contact = self.find_contact_by_full_name(
-            recipient_contacts,
-            last_name = last,
-            middle_name= middle,
-            first_name= first,
-            phone= recipient_phone
+            contact_list=recipient_contacts,
+            last_name=last,
+            middle_name=middle,
+            first_name=first,
+            phone=recipient_phone
         )
-        print("RCP: ",recipient_contact)
-        
+
         if not recipient_contact:
             recipient_contact = self.create_recipient_contact_person(
-                last_name = last,
-                middle_name= middle,
-                first_name= first,
-                email= '',
+                last_name=last,
+                middle_name=middle,
+                first_name=first,
+                email='',
                 phone=recipient_phone
             )
-            print("RCP: ",recipient_contact)
-            
             if not recipient_contact:
                 print('Failed to create recipient contact')
                 raise Exception("Failed to create recipient contact")
         recipient_contact_person_ref = recipient_contact["ContactPerson"]["data"][0]['Ref']
         recipient_contact_person_phone = recipient_contact.get("Phones", recipient_phone)
-        
+
         print('Create waybill')
         print(shipment_parcel)
-        
+
         length = shipment_parcel.get("length")
         width = shipment_parcel.get("width")
-        height = shipment_parcel.get("height")        
-        VolumeGeneral = ((length /100) * (width /100) * (height /100))
-        
+        height = shipment_parcel.get("height")
+        VolumeGeneral = ((length / 100) * (width / 100) * (height / 100))
+
+        # Встановлюємо метод оплати для backward_delivery_data та afterpayment_on_goods_cost
         afterpayment_on_goods_cost = None
-
+        backward_delivery_data = None
+        
         if payment_method and payment_method == "in_department":
-            # Додається інформація про зворотню доставку грошей
-            afterpayment_on_goods_cost = [
-                {
-                    "PayerType": 'ThirdPerson',
+            print(f'{sender_type=}')
+            if sender_type == "legal":
+                afterpayment_on_goods_cost = str(value_of_goods)
+            else:
+                backward_delivery_data = [{
+                    "PayerType": "Recipient",
                     "CargoType": "Money",
-                    "RedeliveryString": value_of_goods
-                }
-            ]
-
+                    "RedeliveryString": str(value_of_goods)
+                }]
         elif payment_method == "card":
-            # For 'Card' payment method, no backward delivery data is needed
+            
             afterpayment_on_goods_cost = None
+            backward_delivery_data = None
+
 
         waybill = self.create_express_waybill(
-            pickup_city_ref = pickup_city_ref, 
-            sender_ref = pickup_counterparty_ref,
-            sender_address_ref = pickup_warehouse_ref,
-            sender_contact_ref = sender_contact_ref,
-            sender_contact_phone = sender_phone,
-            delivery_city_ref = delivery_city_ref,
-            recipient_ref = delivery_counterparty_ref,
-            recipient_address_ref = delivery_warehouse_ref,
-            recipient_contact_ref = recipient_contact_person_ref,
-            recipient_contact_phone = recipient_contact_person_phone,
+            pickup_city_ref=pickup_city_ref,
+            sender_ref=pickup_counterparty_ref,
+            sender_address_ref=pickup_warehouse_ref,
+            sender_contact_ref=sender_contact_ref,
+            sender_contact_phone=sender_contact_phone,
+            delivery_city_ref=delivery_city_ref,
+            recipient_ref=delivery_counterparty_ref,
+            recipient_address_ref=delivery_warehouse_ref,
+            recipient_contact_ref=recipient_contact_person_ref,
+            recipient_contact_phone=recipient_contact_person_phone,
             description_of_content=description_of_content,
             weight=shipment_parcel.get("weight"),
             volume_general=VolumeGeneral,
             value_of_goods=value_of_goods,
-            sender_warehouseindex=sender_warehouseindex,  
+            sender_warehouseindex=sender_warehouseindex,
             recipient_warehouseindex=recipient_warehouseindex,
-            width = width,
-            length = length,
-            height = height,
-            afterpayment_on_goods_cost=value_of_goods,
-            sender_EDRPOU = sender['data'][0]['EDRPOU'],
-            
+            width=width,
+            length=length,
+            height=height,
+            afterpayment_on_goods_cost=afterpayment_on_goods_cost,
+            backward_delivery_data=backward_delivery_data,
+            intended_delivery_date=pickup_date,
+            sender_EDRPOU=sender_EDRPOU,
+            delivery_payer=delivery_payer,
+            sender_type=sender_type,
+            payment_method=payment_method  # Додайте параметр payment_method
         )
-                
+        
+        print('@'*10)
         pprint(waybill)
 
         waybill_ref = waybill['data'][0]['Ref']
@@ -488,7 +532,62 @@ class NovaPoshtaUtils:
         if waybill_number:
             return {'waybill_number': waybill_number, 'waybill_ref': waybill_ref}
         raise Exception("Failed to create waybill")
-    
+
+    def get_sender_counterparty(self):
+        return post(self.api_endpoint, json={
+            "apiKey": self.api_key,
+            "modelName": "Counterparty",
+            "calledMethod": "getCounterparties",
+            "methodProperties": {
+                "CounterpartyProperty": "Sender",
+                "Page": "1"
+            }
+        }).json()
+
+    def get_recipient_counterparty(self):
+        return post(self.api_endpoint, json={
+            "apiKey": self.api_key,
+            "modelName": "Counterparty",
+            "calledMethod": "getCounterparties",
+            "methodProperties": {
+                "CounterpartyProperty": "Recipient",
+                "Page": "1"
+            }
+        }).json()
+
+    def get_counterparty_contacts(self, cp_ref):
+        result = post(self.api_endpoint, json={
+            "apiKey": self.api_key,
+            "modelName": "Counterparty",
+            "calledMethod": "getCounterpartyContactPersons",
+            "methodProperties": {
+                "Ref": cp_ref,
+                "Page": "1"
+            }
+        }).json()['data']
+        return result
+
+    def create_recipient_contact_person(self, first_name, middle_name, last_name, phone, email):
+        result = post(self.api_endpoint, json={
+            "apiKey": self.api_key,
+            "modelName": "Counterparty",
+            "calledMethod": "save",
+            "methodProperties": {
+                "FirstName": first_name,
+                "MiddleName": middle_name,
+                "LastName": last_name,
+                "Phone": phone,
+                "Email": email,
+                "CounterpartyType": "PrivatePerson",
+                "CounterpartyProperty": "Recipient"
+            }
+        }).json()
+
+        if 'data' in result and result['data']:
+            return result['data'][0]
+        else:
+            raise Exception("Failed to create recipient contact")
+
     @staticmethod
     def find_contact_by_full_name(
             contact_list: list[dict],
@@ -512,42 +611,7 @@ class NovaPoshtaUtils:
                 if full_name != target_name:
                     continue
                 return contact
-         
-    def get_counterparty_contacts(self, cp_ref):
-            result = post(self.api_endpoint, json={
-                "apiKey": self.api_key,
-                "modelName": "Counterparty",
-                "calledMethod": "getCounterpartyContactPersons",
-                "methodProperties": {
-                    "Ref": cp_ref,
-                    "Page": "1"
-                }
-            }).json()['data']
-            return result
-        
-    def create_recipient_contact_person(self, first_name, middle_name, last_name, phone, email):
-        result = post(self.api_endpoint, json={
-            "apiKey": self.api_key,
-            "modelName": "Counterparty",
-            "calledMethod": "save",
-            "methodProperties": {
-                "FirstName": first_name,
-                "MiddleName": middle_name,
-                "LastName": last_name,
-                "Phone": phone,
-                "Email": email,
-                "CounterpartyType": "PrivatePerson",
-                "CounterpartyProperty": "Recipient"
-            }
-        }).json()
-        print(result)
-        
-        if 'data' in result and result['data']:
-            
-            return result['data'][0]
-        else:
-            raise Exception("Failed to create recipient contact")
-    
+
     def create_express_waybill(
         self,
         pickup_city_ref,
@@ -562,30 +626,23 @@ class NovaPoshtaUtils:
         recipient_contact_phone,
         description_of_content,
         weight,
-        width,
-        length,
-        height,
         volume_general,
         value_of_goods,
-        sender_warehouseindex,
-        recipient_warehouseindex,
+        sender_warehouseindex=None,
+        recipient_warehouseindex=None,
+        width=None,
+        length=None,
+        height=None,
+        backward_delivery_data=None,
         afterpayment_on_goods_cost=None,
+        intended_delivery_date=None,
         sender_EDRPOU=None,
+        delivery_payer=None,
+        sender_type='legal',
+        payment_method=None
     ):
-        options_seat = [
-            {
-                "volumetricVolume": str(volume_general),
-                "volumetricWidth": str(width),
-                "volumetricLength": str(length),
-                "volumetricHeight": str(height),
-                "weight": str(weight)
-            }
-        ]
-
         method_properties = {
-            "SenderWarehouseIndex": sender_warehouseindex,
-            "RecipientWarehouseIndex": recipient_warehouseindex,
-            "PayerType": "Recipient",
+            "PayerType": delivery_payer,
             "PaymentMethod": "Cash",
             "CargoType": "Cargo",
             "VolumeGeneral": str(volume_general),
@@ -595,22 +652,31 @@ class NovaPoshtaUtils:
             "Description": description_of_content,
             "Cost": str(value_of_goods),
             "CitySender": pickup_city_ref,
-            "Sender": sender_ref,
-            "SenderAddress": sender_address_ref,
-            "ContactSender": sender_contact_ref,
-            "SendersPhone": sender_contact_phone,
+            "Sender": sender_ref,  
+            "SenderAddress": sender_address_ref,  
+            "ContactSender": sender_contact_ref,  
+            "SendersPhone": sender_contact_phone,  
             "CityRecipient": delivery_city_ref,
-            "Recipient": recipient_ref,
-            "RecipientAddress": recipient_address_ref,
-            "ContactRecipient": recipient_contact_ref,
-            "RecipientsPhone": recipient_contact_phone,
-            "OptionsSeat": options_seat,
-            "EDRPOU": sender_EDRPOU,
+            "Recipient": recipient_ref,  
+            "RecipientAddress": recipient_address_ref,  
+            "ContactRecipient": recipient_contact_ref,  
+            "RecipientsPhone": recipient_contact_phone,  
+            "AfterpaymentOnGoodsCost": afterpayment_on_goods_cost,  # Використовуємо параметр "AfterpaymentOnGoodsCost" для контролю оплати
+            "BackwardDeliveryData": backward_delivery_data,
+            "OptionsSeat": [
+                {
+                    "volumetricVolume": str(volume_general),
+                    "volumetricWidth": str(width),
+                    "volumetricLength": str(length),
+                    "volumetricHeight": str(height),
+                    "weight": str(weight)
+                }
+            ],
         }
-
-        if afterpayment_on_goods_cost:
-            # Додайте параметр "AfterpaymentOnGoodsCost" з відповідним значенням
-            method_properties["AfterpaymentOnGoodsCost"] = afterpayment_on_goods_cost
+        print("*-*" * 30)
+        print(method_properties)
+        print("*-*" * 30)
+            
 
         result = post(self.api_endpoint, json={
             "apiKey": self.api_key,
@@ -620,7 +686,7 @@ class NovaPoshtaUtils:
         }).json()
 
         return result
-                
+    
 @frappe.whitelist()      
 def get_label(waybill_number):
     api_key = get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
@@ -637,3 +703,31 @@ def get_label(waybill_number):
     else:
         # У випадку невдалого запиту, викидається виключення
         response.raise_for_status()
+        
+@frappe.whitelist() 
+def get_tracking_data(waybill_number, delivery_contact):
+    api_endpoint = "https://api.novaposhta.ua/v2.0/json/"
+
+    api_key = get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
+
+    body = {
+        "apiKey": api_key,
+        "modelName": "TrackingDocument",
+        "calledMethod": "getStatusDocuments",
+        "methodProperties": {
+            "Documents": [
+                {
+                    "DocumentNumber": waybill_number,
+                    "Phone": delivery_contact
+                }
+            ]
+        }
+    }
+
+    response = requests.post(api_endpoint, json=body)
+    pprint(requests)
+
+    if response.status_code != 200:
+        raise Exception(f"Error getting tracking data for {waybill_number}: {response.status_code}")
+
+    return response.json()

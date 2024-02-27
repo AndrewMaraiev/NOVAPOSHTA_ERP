@@ -51,6 +51,7 @@ def fetch_shipping_rates(
         return []
     return shipment_prices
 
+print('IM HERE!!!!!')
 
 @frappe.whitelist()
 def create_shipment(
@@ -66,8 +67,12 @@ def create_shipment(
     description_of_content,
     pickup_date,
     value_of_goods,
+    delivery_payer,  # Додали обов'язковий параметр 'delivery_payer'
     service_info='WarehouseWarehouse'
 ):
+    # Отримання значення поля "Delivery Payer" з аргументу функції
+    pprint("Delivery Payer value: {}".format(delivery_payer))
+
     shipment_info = {}
     pickup_warehouse_object = frappe.get_doc('NovaPoshta Warehouse', pickup_warehouse_name)
     pickup_warehouse_ref = pickup_warehouse_object.ref 
@@ -90,10 +95,8 @@ def create_shipment(
         dn = frappe.get_doc('Delivery Note', {'name': dn.delivery_note})
         
         form = frappe.get_doc('Shipment Form', {'name': dn.custom_shipment_form})
-        
         payment_method = form.payment_method
- 
-
+        
 
     if shipment_doc.carrier_service == 'NovaPoshta':
         novaposhta = NovaPoshtaUtils()
@@ -110,11 +113,11 @@ def create_shipment(
                 description_of_content=description_of_content,
                 pickup_date=pickup_date,
                 value_of_goods=value_of_goods,
+                delivery_payer=delivery_payer,  #  'Delivery Payer'
                 service_info=service_info,
                 sender_warehouseindex=sender_warehouseindex,
                 recipient_warehouseindex=recipient_warehouseindex,
                 payment_method=payment_method,
-                
             )
         except Exception as e:
             frappe.log_error(str(e))
