@@ -171,8 +171,7 @@ class NovaPoshta(Document):
                 })
                 waybill_doc.insert()
                 
-                pprint(waybill_doc)
-                print('1111'*10)
+                print(waybill_doc)
                 print(waybill_data)
 
             return result
@@ -269,7 +268,7 @@ class NovaPoshtaUtils:
         )
         
         data = delivery_price_data.get("data", [])
-        pprint(delivery_price_data)
+        print(delivery_price_data)
 
         if len(data) == 0:
             return []
@@ -471,7 +470,7 @@ class NovaPoshtaUtils:
         height = shipment_parcel.get("height")
         VolumeGeneral = ((length / 100) * (width / 100) * (height / 100))
 
-        # Встановлюємо метод оплати для backward_delivery_data та afterpayment_on_goods_cost
+        
         afterpayment_on_goods_cost = None
         backward_delivery_data = None
         
@@ -517,12 +516,10 @@ class NovaPoshtaUtils:
             sender_EDRPOU=sender_EDRPOU,
             delivery_payer=delivery_payer,
             sender_type=sender_type,
-            payment_method=payment_method  # Додайте параметр payment_method
+            payment_method=payment_method  
         )
         
-        print('@'*10)
-        pprint(waybill)
-
+        print(waybill)
         waybill_ref = waybill['data'][0]['Ref']
         waybill_number = waybill['data'][0]['IntDocNumber']
         print(waybill_ref)
@@ -661,7 +658,7 @@ class NovaPoshtaUtils:
             "RecipientAddress": recipient_address_ref,  
             "ContactRecipient": recipient_contact_ref,  
             "RecipientsPhone": recipient_contact_phone,  
-            "AfterpaymentOnGoodsCost": afterpayment_on_goods_cost,  # Використовуємо параметр "AfterpaymentOnGoodsCost" для контролю оплати
+            "AfterpaymentOnGoodsCost": afterpayment_on_goods_cost,  
             "BackwardDeliveryData": backward_delivery_data,
             "OptionsSeat": [
                 {
@@ -673,10 +670,7 @@ class NovaPoshtaUtils:
                 }
             ],
         }
-        print("*-*" * 30)
-        print(method_properties)
-        print("*-*" * 30)
-            
+       
 
         result = post(self.api_endpoint, json={
             "apiKey": self.api_key,
