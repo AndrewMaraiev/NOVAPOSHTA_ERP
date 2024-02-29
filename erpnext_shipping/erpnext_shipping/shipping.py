@@ -51,6 +51,10 @@ def fetch_shipping_rates(
         return []
     return shipment_prices
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9d1ae0d9227ebde6f88a702ab8a485108e3ea074
 
 @frappe.whitelist()
 def create_shipment(

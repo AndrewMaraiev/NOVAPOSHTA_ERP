@@ -174,9 +174,13 @@ class NovaPoshta(Document):
                 })
                 waybill_doc.insert()
                 
+<<<<<<< HEAD
                 print(waybill_data.get("AfterpaymentOnGoodsCost"))
                 print(waybill_data.get("BackwardDeliveryMoney"))
                 pprint(waybill_doc)
+=======
+                print(waybill_doc)
+>>>>>>> 9d1ae0d9227ebde6f88a702ab8a485108e3ea074
                 print(waybill_data)
 
             return result
@@ -523,8 +527,12 @@ class NovaPoshtaUtils:
             payment_method=payment_method  
         )
         
+<<<<<<< HEAD
         pprint(waybill)
 
+=======
+        print(waybill)
+>>>>>>> 9d1ae0d9227ebde6f88a702ab8a485108e3ea074
         waybill_ref = waybill['data'][0]['Ref']
         waybill_number = waybill['data'][0]['IntDocNumber']
         print(waybill_ref)
@@ -663,7 +671,11 @@ class NovaPoshtaUtils:
             "RecipientAddress": recipient_address_ref,  
             "ContactRecipient": recipient_contact_ref,  
             "RecipientsPhone": recipient_contact_phone,  
+<<<<<<< HEAD
             "AfterpaymentOnGoodsCost": afterpayment_on_goods_cost, 
+=======
+            "AfterpaymentOnGoodsCost": afterpayment_on_goods_cost,  
+>>>>>>> 9d1ae0d9227ebde6f88a702ab8a485108e3ea074
             "BackwardDeliveryData": backward_delivery_data,
             "OptionsSeat": [
                 {
@@ -675,7 +687,11 @@ class NovaPoshtaUtils:
                 }
             ],
         }
+<<<<<<< HEAD
             
+=======
+       
+>>>>>>> 9d1ae0d9227ebde6f88a702ab8a485108e3ea074
 
         result = post(self.api_endpoint, json={
             "apiKey": self.api_key,
