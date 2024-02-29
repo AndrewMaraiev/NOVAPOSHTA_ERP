@@ -17,7 +17,10 @@
   "quantity",
   "weight",
   "redelivery_option",
-  "amended_from"
+  "amended_from",
+  "payment_control",
+  "backward_delivery",
+  "status_novaposhta"
  ],
  "fields": [
   {
@@ -74,12 +77,27 @@
    "options": "NovaPoshta",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "payment_control",
+   "fieldtype": "Data",
+   "label": "Payment control"
+  },
+  {
+   "fieldname": "backward_delivery",
+   "fieldtype": "Data",
+   "label": "Backward delivery"
+  },
+  {
+   "fieldname": "status_novaposhta",
+   "fieldtype": "Data",
+   "label": "Status NovaPoshta"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-27 14:48:56.510638",
+ "modified": "2024-02-28 17:03:13.495576",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "NovaPoshta Waybill",

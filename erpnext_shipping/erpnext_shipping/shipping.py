@@ -51,7 +51,6 @@ def fetch_shipping_rates(
         return []
     return shipment_prices
 
-print('IM HERE!!!!!')
 
 @frappe.whitelist()
 def create_shipment(

@@ -131,10 +131,10 @@ class NovaPoshta(Document):
     @whitelist()
     def get_waybill(self, api_key):
         now = datetime.now()
-        date_from = "01.01.2024"
-        date_to = "01.06.2024"
-        api_key=get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
-
+        current_year = now.year
+        date_from = f"01.01.{current_year}"
+        date_to = f"31.12.{current_year}"
+        api_key = get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
 
         data = {
             "apiKey": api_key,
@@ -168,11 +168,15 @@ class NovaPoshta(Document):
                     "weight": waybill_data.get("Weight"),
                     "redelivery_option": waybill_data.get("ServiceType"),
                     "amended_from": waybill_data.get("DocumentType"),
+                    "payment_control": waybill_data.get("AfterpaymentOnGoodsCost"),
+                    "backward_delivery": waybill_data.get("BackwardDeliveryMoney"),
+                    "status_novaposhta": waybill_data.get("StateName")[:140],
                 })
                 waybill_doc.insert()
                 
+                print(waybill_data.get("AfterpaymentOnGoodsCost"))
+                print(waybill_data.get("BackwardDeliveryMoney"))
                 pprint(waybill_doc)
-                print('1111'*10)
                 print(waybill_data)
 
             return result
@@ -194,7 +198,6 @@ class NovaPoshta(Document):
         return frappe.db.get_value("NovaPoshta", "NovaPoshta", "enabled")    
 
     def validate(self):
-        # Перевірка, чи об'єкт NovaPoshta налаштований та активний
         if not NovaPoshta.get_active_novaposhta():
             frappe.throw(_("Please configure and activate NovaPoshta integration first"))   
             
@@ -269,7 +272,7 @@ class NovaPoshtaUtils:
         )
         
         data = delivery_price_data.get("data", [])
-        pprint(delivery_price_data)
+        print(delivery_price_data)
 
         if len(data) == 0:
             return []
@@ -471,7 +474,7 @@ class NovaPoshtaUtils:
         height = shipment_parcel.get("height")
         VolumeGeneral = ((length / 100) * (width / 100) * (height / 100))
 
-        # Встановлюємо метод оплати для backward_delivery_data та afterpayment_on_goods_cost
+        
         afterpayment_on_goods_cost = None
         backward_delivery_data = None
         
@@ -517,10 +520,9 @@ class NovaPoshtaUtils:
             sender_EDRPOU=sender_EDRPOU,
             delivery_payer=delivery_payer,
             sender_type=sender_type,
-            payment_method=payment_method  # Додайте параметр payment_method
+            payment_method=payment_method  
         )
         
-        print('@'*10)
         pprint(waybill)
 
         waybill_ref = waybill['data'][0]['Ref']
@@ -661,7 +663,7 @@ class NovaPoshtaUtils:
             "RecipientAddress": recipient_address_ref,  
             "ContactRecipient": recipient_contact_ref,  
             "RecipientsPhone": recipient_contact_phone,  
-            "AfterpaymentOnGoodsCost": afterpayment_on_goods_cost,  # Використовуємо параметр "AfterpaymentOnGoodsCost" для контролю оплати
+            "AfterpaymentOnGoodsCost": afterpayment_on_goods_cost, 
             "BackwardDeliveryData": backward_delivery_data,
             "OptionsSeat": [
                 {
@@ -673,9 +675,6 @@ class NovaPoshtaUtils:
                 }
             ],
         }
-        print("*-*" * 30)
-        print(method_properties)
-        print("*-*" * 30)
             
 
         result = post(self.api_endpoint, json={
