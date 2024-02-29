@@ -51,11 +51,6 @@ def fetch_shipping_rates(
         return []
     return shipment_prices
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 9d1ae0d9227ebde6f88a702ab8a485108e3ea074
-
 @frappe.whitelist()
 def create_shipment(
     shipment,
@@ -70,7 +65,7 @@ def create_shipment(
     description_of_content,
     pickup_date,
     value_of_goods,
-    delivery_payer,  # Додали обов'язковий параметр 'delivery_payer'
+    delivery_payer,  # 'delivery_payer'
     service_info='WarehouseWarehouse'
 ):
     # Отримання значення поля "Delivery Payer" з аргументу функції

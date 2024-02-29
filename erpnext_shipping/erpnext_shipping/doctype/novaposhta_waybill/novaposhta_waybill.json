@@ -20,7 +20,9 @@
   "amended_from",
   "payment_control",
   "backward_delivery",
-  "status_novaposhta"
+  "status_novaposhta",
+  "waybill_is_created",
+  "waybill_was_closed"
  ],
  "fields": [
   {
@@ -92,12 +94,22 @@
    "fieldname": "status_novaposhta",
    "fieldtype": "Data",
    "label": "Status NovaPoshta"
+  },
+  {
+   "fieldname": "waybill_is_created",
+   "fieldtype": "Data",
+   "label": "Waybill is created"
+  },
+  {
+   "fieldname": "waybill_was_closed",
+   "fieldtype": "Data",
+   "label": "Waybill was closed"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-28 17:03:13.495576",
+ "modified": "2024-02-29 13:20:25.775099",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "NovaPoshta Waybill",
