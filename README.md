@@ -69,9 +69,20 @@ In the ERPNext system, go to the integration settings.
 Find the section for Nova Poshta API.
 Insert the obtained API key into the "API Key" field.
 Check the "Enabled" field and save the settings.
- ![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/erp%20np%20api.png)
-Now, after successful integration with Nova Poshta, you will be able to utilize their delivery services for comparing rates, generating labels, and tracking shipment statuses in the ERPNext system.
+ ![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/NovaPoshta%20menu.png)
+Now, after successful integration with Nova Poshta, you will be able to utilize their delivery services for comparing rates, generating labels, and tracking shipment statuses in the ERPNext system. Also here you will receive the areas, cities, branches and waybills from the personal account of "Nova Poshta"
+When you select 'get areas' you will get a list of company areas
+![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/NovaPoshta_areas.png)
 
+When you select 'get cities', you will get a list of the company's cities
+![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/NovaPoshta_cityes.png)
+
+When you select 'get warehouse', you will receive a list of the company's warehouses
+![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/NovaPoshta_warehouse.png)
+
+When you select 'get waybill', you will receive a list of waybills from your Nova Poshta personal account with the current statuses of each shipment
+
+![Nova Poshta site](https://github.com/AndrewMaraiev/NOVAPOSHTA_ERP/blob/main/images/fetch%20status.png)
 
 ## Usage
 
