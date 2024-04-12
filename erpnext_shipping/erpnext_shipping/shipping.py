@@ -12,7 +12,7 @@ from frappe.utils import flt
 from erpnext.stock.doctype.shipment.shipment import get_company_contact
 from erpnext_shipping.erpnext_shipping.utils import get_address, get_contact, match_parcel_service_type_carrier
 from erpnext_shipping.erpnext_shipping.doctype.novaposhta.novaposhta import NOVAPOSHTA_PROVIDER, NovaPoshtaUtils
-from erpnext_shipping.erpnext_shipping.doctype.packlink.packlink import PACKLINK_PROVIDER, PackLinkUtils
+from erpnext_shipping.erpnext_shipping.doctype.ukrposhta.ukrposhta import UKRPOSHTA_PROVIDER, UkrposhtaUtils
 from erpnext_shipping.erpnext_shipping.doctype.sendcloud.sendcloud import SENDCLOUD_PROVIDER, SendCloudUtils
 import requests
 from pprint import pprint

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from . import __version__ as app_version
+from frappe.utils.password import get_decrypted_password
 
 app_name = "erpnext_shipping"
 app_title = "ERPNext Shipping"
@@ -107,11 +108,11 @@ doctype_js = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"daily": [
-# 		"erpnext_shipping.utils.update_tracking_info_daily"
-# 	]
-# }
+scheduler_events = {
+     "cron": {
+         "* * * * *": ["erpnext_shipping.erpnext_shipping.doctype.novaposhta.novaposhta.test_function1"]
+     }
+ }
 
 # Testing
 # -------

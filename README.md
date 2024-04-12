@@ -3,11 +3,11 @@
 A Shipping Integration for ERPNext with various platforms. Platforms integrated in this app are:
 - [Nova Poshta](https://novaposhta.ua/)
 - [LetMeShip](https://www.letmeship.com/en/)
-- [SendCloud](https://www.sendcloud.com/home-new/)
+- [Ukrposhta](https://www.ukrposhta.ua/ua)
 
 ## Features
 
-- **Shipment Creation**: Easily create shipments to carrier services like Nova Poshta, LetMeShip, and SendCloud.
+- **Shipment Creation**: Easily create shipments to carrier services like Nova Poshta, LetMeShip, and Ukrposhta.
 
 - **Fetch shipping rates**: Compare shipping rates from different carriers and service providers to make informed shipping decisions.
 

@@ -6,34 +6,32 @@
  "engine": "InnoDB",
  "field_order": [
   "enabled",
-  "api_key",
-  "information"
+  "api_key"
  ],
  "fields": [
   {
    "default": "0",
    "fieldname": "enabled",
    "fieldtype": "Check",
-   "label": "Enabled"
+   "in_list_view": 1,
+   "label": "Enabled",
+   "reqd": 1
   },
   {
    "fieldname": "api_key",
    "fieldtype": "Password",
+   "in_list_view": 1,
    "label": "API Key",
-   "read_only_depends_on": "eval:doc.enabled == 0"
-  },
-  {
-   "fieldname": "information",
-   "fieldtype": "HTML",
-   "options": "<div><span class=\"text-medium text-muted\">For steps to generate the API key, click <a href=\"https://support-pro.packlink.com/hc/en-gb/articles/213431749-How-to-generate-an-API-key-on-PRO\" target=\"_blank\">here</a></span></div>"
+   "read_only_depends_on": "eval:doc.enabled == 0",
+   "reqd": 1
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2020-12-16 15:30:27.436717",
+ "modified": "2024-04-09 11:55:08.374171",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
- "name": "Packlink",
+ "name": "Ukrposhta",
  "owner": "Administrator",
  "permissions": [
   {
@@ -50,5 +48,6 @@
  "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }
