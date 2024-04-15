@@ -331,7 +331,7 @@ function select_from_available_services(frm, available_services) {
 	frm.select_row = function(service_data) {
 		// Check if the 'service_data' object has the 'service_provider' property defined
 		if (service_data.service_provider) {
-			var delivery_payer = frm.doc.delivery_payer; // Отримання значення поля "Delivery Payer"
+			var custom_delivery_payer = frm.doc.custom_delivery_payer; // Отримання значення поля "Delivery Payer"
 			frappe.call({
 				method: "erpnext_shipping.erpnext_shipping.shipping.create_shipment",
 				freeze: true,
@@ -349,7 +349,7 @@ function select_from_available_services(frm, available_services) {
 					description_of_content: frm.doc.description_of_content,
 					pickup_date: frm.doc.pickup_date,
 					value_of_goods: frm.doc.value_of_goods,
-					delivery_payer: delivery_payer //add delivery_payer
+					custom_delivery_payer: custom_delivery_payer //add custom_delivery_payer
 				},
 				callback: function(r) {
 					console.log(r);

@@ -23,6 +23,7 @@ from decimal import Decimal
 from frappe.utils.password import get_decrypted_password
 from datetime import datetime
 from frappe import enqueue
+import schedule
 
 
 def test_function1():
@@ -224,12 +225,12 @@ class NovaPoshta(Document):
         self.get_cities()
         self.get_warehouses()
         
-    def get_active_novaposhta():
-        return frappe.db.get_value("NovaPoshta", "NovaPoshta", "enabled")    
+    # def get_active_novaposhta():
+    #     return frappe.db.get_value("NovaPoshta", "NovaPoshta", "enabled")    
 
-    def validate(self):
-        if not NovaPoshta.get_active_novaposhta():
-            frappe.throw(_("Please configure and activate NovaPoshta integration first"))   
+    # def validate(self):
+    #     if not NovaPoshta.get_active_novaposhta():
+    #         frappe.throw(_("Please configure and activate NovaPoshta integration first"))   
             
     @whitelist()
     def search_settlements(self, city_name, limit=50, page=1):
@@ -443,7 +444,7 @@ class NovaPoshtaUtils:
         description_of_content,
         pickup_date,
         value_of_goods,
-        delivery_payer=None,
+        custom_delivery_payer=None,
         service_info='WarehouseWarehouse',
         sender_warehouseindex=None,
         recipient_warehouseindex=None,
@@ -548,7 +549,7 @@ class NovaPoshtaUtils:
             backward_delivery_data=backward_delivery_data,
             intended_delivery_date=pickup_date,
             sender_EDRPOU=sender_EDRPOU,
-            delivery_payer=delivery_payer,
+            custom_delivery_payer=custom_delivery_payer,
             sender_type=sender_type,
             payment_method=payment_method  
         )
@@ -670,12 +671,12 @@ class NovaPoshtaUtils:
         afterpayment_on_goods_cost=None,
         intended_delivery_date=None,
         sender_EDRPOU=None,
-        delivery_payer=None,
+        custom_delivery_payer=None,
         sender_type='legal',
         payment_method=None
     ):
         method_properties = {
-            "PayerType": delivery_payer.capitalize(),
+            "PayerType": custom_delivery_payer.capitalize(),
             "PaymentMethod": "Cash",
             "CargoType": "Cargo",
             "VolumeGeneral": str(volume_general),

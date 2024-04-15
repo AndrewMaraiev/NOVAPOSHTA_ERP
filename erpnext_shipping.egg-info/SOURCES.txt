@@ -1,5 +1,7 @@
 MANIFEST.in
 README.md
+instruction warehouse en.md
+instruction warehouse ua.md
 license.txt
 requirements.txt
 setup.py
@@ -31,7 +33,13 @@ erpnext_shipping/erpnext_shipping/doctype/novaposhta/novaposhta.json
 erpnext_shipping/erpnext_shipping/doctype/novaposhta/novaposhta.py
 erpnext_shipping/erpnext_shipping/doctype/novaposhta/novaposhta_utils.py
 erpnext_shipping/erpnext_shipping/doctype/novaposhta/np_client.py
+erpnext_shipping/erpnext_shipping/doctype/novaposhta/test.py
 erpnext_shipping/erpnext_shipping/doctype/novaposhta/test_novaposhta.py
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_address/__init__.py
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_address/novaposhta_address.js
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_address/novaposhta_address.json
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_address/novaposhta_address.py
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_address/test_novaposhta_address.py
 erpnext_shipping/erpnext_shipping/doctype/novaposhta_areas/__init__.py
 erpnext_shipping/erpnext_shipping/doctype/novaposhta_areas/novaposhta_areas.js
 erpnext_shipping/erpnext_shipping/doctype/novaposhta_areas/novaposhta_areas.json
@@ -47,16 +55,21 @@ erpnext_shipping/erpnext_shipping/doctype/novaposhta_settings/novaposhta_setting
 erpnext_shipping/erpnext_shipping/doctype/novaposhta_settings/novaposhta_settings.json
 erpnext_shipping/erpnext_shipping/doctype/novaposhta_settings/novaposhta_settings.py
 erpnext_shipping/erpnext_shipping/doctype/novaposhta_settings/test_novaposhta_settings.py
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_street/__init__.py
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_street/novaposhta_street.js
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_street/novaposhta_street.json
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_street/novaposhta_street.py
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_street/test_novaposhta_street.py
 erpnext_shipping/erpnext_shipping/doctype/novaposhta_warehouse/__init__.py
 erpnext_shipping/erpnext_shipping/doctype/novaposhta_warehouse/novaposhta_warehouse.js
 erpnext_shipping/erpnext_shipping/doctype/novaposhta_warehouse/novaposhta_warehouse.json
 erpnext_shipping/erpnext_shipping/doctype/novaposhta_warehouse/novaposhta_warehouse.py
 erpnext_shipping/erpnext_shipping/doctype/novaposhta_warehouse/test_novaposhta_warehouse.py
-erpnext_shipping/erpnext_shipping/doctype/packlink/__init__.py
-erpnext_shipping/erpnext_shipping/doctype/packlink/packlink.js
-erpnext_shipping/erpnext_shipping/doctype/packlink/packlink.json
-erpnext_shipping/erpnext_shipping/doctype/packlink/packlink.py
-erpnext_shipping/erpnext_shipping/doctype/packlink/test_packlink.py
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_waybill/__init__.py
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_waybill/novaposhta_waybill.js
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_waybill/novaposhta_waybill.json
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_waybill/novaposhta_waybill.py
+erpnext_shipping/erpnext_shipping/doctype/novaposhta_waybill/test_novaposhta_waybill.py
 erpnext_shipping/erpnext_shipping/doctype/parcel_service/__init__.py
 erpnext_shipping/erpnext_shipping/doctype/parcel_service/parcel_service.js
 erpnext_shipping/erpnext_shipping/doctype/parcel_service/parcel_service.json
@@ -100,6 +113,13 @@ erpnext_shipping/erpnext_shipping/doctype/shipping_rule_charge/shipping_rule_cha
 erpnext_shipping/erpnext_shipping/doctype/shipping_rule_charge/shipping_rule_charge.json
 erpnext_shipping/erpnext_shipping/doctype/shipping_rule_charge/shipping_rule_charge.py
 erpnext_shipping/erpnext_shipping/doctype/shipping_rule_charge/test_shipping_rule_charge.py
+erpnext_shipping/erpnext_shipping/doctype/ukrposhta/__init__.py
+erpnext_shipping/erpnext_shipping/doctype/ukrposhta/test_ukrposhta.py
+erpnext_shipping/erpnext_shipping/doctype/ukrposhta/ukrposhta.js
+erpnext_shipping/erpnext_shipping/doctype/ukrposhta/ukrposhta.json
+erpnext_shipping/erpnext_shipping/doctype/ukrposhta/ukrposhta.py
+erpnext_shipping/erpnext_shipping/doctype/ukrposhta/ukrposhta_client.py
+erpnext_shipping/erpnext_shipping/doctype/ukrposhta/ukrposta.js
 erpnext_shipping/erpnext_shipping/patches/create_custom_delivery_note_fields.py
 erpnext_shipping/fixtures/payment_methods.json
 erpnext_shipping/fixtures/shipment_providers.json

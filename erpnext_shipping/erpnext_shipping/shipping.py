@@ -12,7 +12,7 @@ from frappe.utils import flt
 from erpnext.stock.doctype.shipment.shipment import get_company_contact
 from erpnext_shipping.erpnext_shipping.utils import get_address, get_contact, match_parcel_service_type_carrier
 from erpnext_shipping.erpnext_shipping.doctype.novaposhta.novaposhta import NOVAPOSHTA_PROVIDER, NovaPoshtaUtils
-from erpnext_shipping.erpnext_shipping.doctype.ukrposhta.ukrposhta import UKRPOSHTA_PROVIDER, UkrposhtaUtils
+# from erpnext_shipping.erpnext_shipping.doctype.ukrposhta.ukrposhta import UKRPOSHTA_PROVIDER, UkrposhtaUtils
 from erpnext_shipping.erpnext_shipping.doctype.sendcloud.sendcloud import SENDCLOUD_PROVIDER, SendCloudUtils
 import requests
 from pprint import pprint
@@ -65,11 +65,11 @@ def create_shipment(
     description_of_content,
     pickup_date,
     value_of_goods,
-    delivery_payer,  # 'delivery_payer'
+    custom_delivery_payer,  # 'custom_delivery_payer'
     service_info='WarehouseWarehouse'
 ):
     # Отримання значення поля "Delivery Payer" з аргументу функції
-    pprint("Delivery Payer value: {}".format(delivery_payer))
+    pprint("Delivery Payer value: {}".format(custom_delivery_payer))
 
     shipment_info = {}
     pickup_warehouse_object = frappe.get_doc('NovaPoshta Warehouse', pickup_warehouse_name)
@@ -111,7 +111,7 @@ def create_shipment(
                 description_of_content=description_of_content,
                 pickup_date=pickup_date,
                 value_of_goods=value_of_goods,
-                delivery_payer=delivery_payer,  #  'Delivery Payer'
+                custom_delivery_payer=custom_delivery_payer,  #  'Delivery Payer'
                 service_info=service_info,
                 sender_warehouseindex=sender_warehouseindex,
                 recipient_warehouseindex=recipient_warehouseindex,
