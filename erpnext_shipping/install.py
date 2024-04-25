@@ -23,7 +23,7 @@ def after_install():
         button_label="Зберегти",
         success_title="Return to Cart",
         success_url="/cart",
-        client_script="""frappe.web_form.after_load = () => {\n    if (window.location.pathname.endsWith("/new") && frappe.session.user) {\n        frappe.web_form.set_value('email', frappe.session.user)\n    }\n}\n""",
+        client_script="""\nfrappe.web_form.after_load = () => {\n    if (window.location.pathname.endsWith(\"/new\") && frappe.session.user) {\n        frappe.web_form.set_value('full_name', frappe.session.user)\n    }\n}\n\nfrappe.web_form.on('city', (field, value) => {\n    if (value) {\n        frappe.call({\n                method: 'frappe.client.get_list',\n                args: {\n                    doctype: 'NovaPoshta Warehouse',\n                    fields: ['ref as value', 'warehouse_name as label'],\n                    filters: {\n                        'city': value\n                    },\n                    limit_page_length: 2048,\n                    order_by: 'warehouse_name asc'\n                },\n                callback: function(data) {\n                    if (data.message) {\n                        frappe.web_form.fields_dict.warehouse.set_data(data.message);\n                    }\n                }\n            });\n    }\n    \n});""",
         doctype="Web Form",
         web_form_fields=[
             dict(
