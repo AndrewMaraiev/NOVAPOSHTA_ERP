@@ -59,7 +59,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-14 18:13:49.860123",
+ "modified": "2024-04-24 13:10:22.218510",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "NovaPoshta cities",
@@ -81,7 +81,7 @@
  ],
  "show_title_field_in_link": 1,
  "sort_field": "modified",
- "sort_order": "DESC",
+ "sort_order": "ASC",
  "states": [],
  "title_field": "description"
 }
