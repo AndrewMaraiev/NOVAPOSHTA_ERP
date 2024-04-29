@@ -1,112 +1,111 @@
 {
-    "actions": [],
-    "allow_rename": 1,
-    "autoname": "format:Shipment-Form-{######}",
-    "creation": "2024-01-02 17:01:12.639958",
-    "default_view": "List",
-    "doctype": "DocType",
-    "editable_grid": 1,
-    "engine": "InnoDB",
-    "field_order": [
-      "default",
-      "provider",
-      "full_name",
-      "phone",
-      "city",
-      "warehouse",
-      "payment_method",
-      "email",
-      "delivery_type",
-      "street",
-      "house",
-      "flat"
-    ],
-    "fields": [
-        {
-          "fieldname": "default",
-          "fieldtype": "Check",
-          "label": "Default Shipment",
-          "default": "default"
-        },
-        {
-          "fieldname": "provider",
-          "fieldtype": "Select",
-          "label": "Shipment Provider",
-          "options": "NovaPoshta",
-          "reqd": 1
-        },
-        {
-          "fieldname": "full_name",
-          "fieldtype": "Data",
-          "label": "Full Name",
-          "reqd": 1
-        },
-        {
-          "fieldname": "phone",
-          "fieldtype": "Data",
-          "label": "Phone",
-          "options": "Phone",
-          "reqd": 1
-        },
-        {
-          "fieldname": "city",
-          "fieldtype": "Link",
-          "label": "City",
-          "options": "NovaPoshta cities",
-          "reqd": 1
-        },
-        {
-          "fieldname": "warehouse",
-          "fieldtype": "Link",
-          "label": "Warehouse",
-          "options": "NovaPoshta Warehouse",
-          "reqd": 1
-        },
-        {
-          "fieldname": "payment_method",
-          "fieldtype": "Link",
-          "label": "Payment method",
-          "options": "Payment Methods"
-        },
-        {
-          "fieldname": "email",
-          "fieldtype": "Data",
-          "label": "Email",
-          "options": "Email",
-          "reqd": 1
-        },
-        {
-          "fieldname": "delivery_type",
-          "fieldtype": "Select",
-          "label": "Delivery type",
-          "options": "Warehouse",
-          "reqd": 1
-        }
-    ],
-    "index_web_pages_for_search": 1,
-    "links": [],
-    "modified": "2024-02-08 16:31:57.374637",
-    "modified_by": "Administrator",
-    "module": "ERPNext Shipping",
-    "name": "Shipment Form",
-    "naming_rule": "Expression",
-    "owner": "Administrator",
-    "permissions": [
-      {
-        "create": 1,
-        "delete": 1,
-        "email": 1,
-        "export": 1,
-        "print": 1,
-        "read": 1,
-        "role": "System Manager",
-        "share": 1,
-        "write": 1
-      }
-    ],
-    "show_title_field_in_link": 1,
-    "sort_field": "modified",
-    "sort_order": "DESC",
-    "states": [],
-    "title_field": "full_name"
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:Shipment-Form-{######}",
+ "creation": "2024-01-02 17:01:12.639958",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "default",
+  "provider",
+  "full_name",
+  "phone",
+  "area",
+  "city",
+  "warehouse",
+  "payment_method",
+  "email"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "default",
+   "fieldtype": "Check",
+   "label": "Default Shipment"
+  },
+  {
+   "default": "NovaPoshta",
+   "fieldname": "provider",
+   "fieldtype": "Select",
+   "label": "Shipment Provider",
+   "options": "NovaPoshta",
+   "reqd": 1
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Phone",
+   "options": "Phone",
+   "reqd": 1
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Link",
+   "label": "City",
+   "options": "NovaPoshta cities"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Warehouse",
+   "options": "NovaPoshta Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "payment_method",
+   "fieldtype": "Link",
+   "label": "Payment method",
+   "options": "Payment Methods"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "options": "Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "area",
+   "fieldtype": "Link",
+   "label": "Area",
+   "options": "NovaPoshta areas"
   }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-04-29 15:31:32.658871",
+ "modified_by": "Administrator",
+ "module": "ERPNext Shipping",
+ "name": "Shipment Form",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "full_name"
+}
