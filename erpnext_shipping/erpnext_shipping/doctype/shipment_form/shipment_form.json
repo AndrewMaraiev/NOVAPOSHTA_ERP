@@ -12,7 +12,6 @@
       "provider",
       "full_name",
       "phone",
-      "area",
       "city",
       "warehouse",
       "payment_method",
@@ -47,13 +46,6 @@
           "fieldtype": "Data",
           "label": "Phone",
           "options": "Phone",
-          "reqd": 1
-        },
-        {
-          "fieldname": "area",
-          "fieldtype": "Link",
-          "label": "Area",
-          "options": "NovaPoshta areas",
           "reqd": 1
         },
         {
