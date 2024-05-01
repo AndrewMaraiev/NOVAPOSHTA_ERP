@@ -12,7 +12,6 @@
   "provider",
   "full_name",
   "phone",
-  "area",
   "city",
   "warehouse",
   "payment_method",
@@ -73,17 +72,11 @@
    "label": "Email",
    "options": "Email",
    "reqd": 1
-  },
-  {
-   "fieldname": "area",
-   "fieldtype": "Link",
-   "label": "Area",
-   "options": "NovaPoshta areas"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-29 15:31:32.658871",
+ "modified": "2024-04-30 13:48:29.369748",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "Shipment Form",
@@ -101,6 +94,18 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Customer",
+   "share": 1
   }
  ],
  "show_title_field_in_link": 1,
