@@ -1,0 +1,114 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-05-01 15:42:32.749442",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "region_id",
+  "region_name",
+  "district_id",
+  "district_name",
+  "city_id",
+  "city_name",
+  "street_id",
+  "street_name",
+  "postal_code",
+  "post_office_id",
+  "sender_uuid",
+  "recipient_uuid",
+  "parcels"
+ ],
+ "fields": [
+  {
+   "fieldname": "region_id",
+   "fieldtype": "Data",
+   "label": "Region ID"
+  },
+  {
+   "fieldname": "region_name",
+   "fieldtype": "Data",
+   "label": "Region Name"
+  },
+  {
+   "fieldname": "district_id",
+   "fieldtype": "Data",
+   "label": "District ID"
+  },
+  {
+   "fieldname": "district_name",
+   "fieldtype": "Data",
+   "label": "District Name"
+  },
+  {
+   "fieldname": "city_id",
+   "fieldtype": "Data",
+   "label": "City ID"
+  },
+  {
+   "fieldname": "city_name",
+   "fieldtype": "Data",
+   "label": "City Name"
+  },
+  {
+   "fieldname": "street_id",
+   "fieldtype": "Data",
+   "label": "Street ID"
+  },
+  {
+   "fieldname": "street_name",
+   "fieldtype": "Data",
+   "label": "Street Name"
+  },
+  {
+   "fieldname": "postal_code",
+   "fieldtype": "Data",
+   "label": "Postal Code"
+  },
+  {
+   "fieldname": "post_office_id",
+   "fieldtype": "Data",
+   "label": "Post Office ID"
+  },
+  {
+   "fieldname": "sender_uuid",
+   "fieldtype": "Data",
+   "label": "Sender UUID"
+  },
+  {
+   "fieldname": "recipient_uuid",
+   "fieldtype": "Data",
+   "label": "Recipient UUID"
+  },
+  {
+   "fieldname": "parcels",
+   "fieldtype": "Data",
+   "label": "parcels"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_virtual": 1,
+ "links": [],
+ "modified": "2024-05-01 16:26:23.868590",
+ "modified_by": "Administrator",
+ "module": "ERPNext Shipping",
+ "name": "Ukrposhta_function",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

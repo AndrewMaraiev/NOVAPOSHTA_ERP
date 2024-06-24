@@ -1,0 +1,63 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "autoname": "format:{district_id}-{name}-{region_id}",
+    "creation": "2024-05-08 12:30:09.824814",
+    "doctype": "DocType",
+    "engine": "InnoDB",
+    "field_order": [
+     "district_id",
+     "name1",
+     "region_id",
+     "json_data"
+    ],
+    "fields": [
+     {
+      "fieldname": "district_id",
+      "fieldtype": "Data",
+      "label": "District ID"
+     },
+     {
+      "fieldname": "name1",
+      "fieldtype": "Data",
+      "label": "Name"
+     },
+     {
+      "fieldname": "region_id",
+      "fieldtype": "Data",
+      "label": "Region ID"
+     },
+     {
+      "fieldname": "json_data",
+      "fieldtype": "Code",
+      "label": "JSON Data",
+      "options": "JSON"
+     }
+    ],
+    "index_web_pages_for_search": 1,
+    "links": [],
+    "modified": "2024-05-10 11:04:37.510450",
+    "modified_by": "Administrator",
+    "module": "ERPNext Shipping",
+    "name": "Ukrposhta Districts",
+    "naming_rule": "Expression",
+    "owner": "Administrator",
+    "permissions": [
+     {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+     }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": []
+   }
+   

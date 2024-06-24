@@ -2,6 +2,7 @@
  {
   "docstatus": 0,
   "doctype": "Payment Methods",
+  "modified": "2024-04-24 16:29:19.644735",
   "name": "in_department",
   "payment_id": "in_department",
   "payment_method_name": "In Department"
@@ -9,6 +10,7 @@
  {
   "docstatus": 0,
   "doctype": "Payment Methods",
+  "modified": "2024-04-24 16:29:19.693281",
   "name": "on_account",
   "payment_id": "on_account",
   "payment_method_name": "Pay with Account"

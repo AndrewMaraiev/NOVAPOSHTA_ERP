@@ -1,0 +1,77 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-05-08 12:40:48.828252",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "pi",
+  "pc",
+  "city_id",
+  "district_id",
+  "street_id",
+  "region_id",
+  "address"
+ ],
+ "fields": [
+  {
+   "fieldname": "pi",
+   "fieldtype": "Data",
+   "label": "pi"
+  },
+  {
+   "fieldname": "pc",
+   "fieldtype": "Data",
+   "label": "pc"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "label": "ADDRESS"
+  },
+  {
+   "fieldname": "city_id",
+   "fieldtype": "Data",
+   "label": "CityId"
+  },
+  {
+   "fieldname": "district_id",
+   "fieldtype": "Data",
+   "label": "DistrictId"
+  },
+  {
+   "fieldname": "street_id",
+   "fieldtype": "Data",
+   "label": "StreetId"
+  },
+  {
+   "fieldname": "region_id",
+   "fieldtype": "Data",
+   "label": "RegionId"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-05-13 14:41:52.072427",
+ "modified_by": "Administrator",
+ "module": "ERPNext Shipping",
+ "name": "Ukrposhta Warehouses",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

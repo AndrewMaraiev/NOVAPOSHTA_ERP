@@ -34,7 +34,8 @@ app_include_js = "/assets/erpnext_shipping/js/shipping.min.js"
 
 # include js in doctype views
 doctype_js = {
-	"Shipment" : "public/js/shipment.js"
+	"Shipment" : "public/js/shipment.js",
+    "Ukrposhta tracking": "public/js/ukrposhta_tracking.js"
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -139,5 +140,6 @@ scheduler_events = {
 
 fixtures = [
     "Shipment Providers",
-    "Payment Methods"
+    "Payment Methods",
+    "Custom Field" 
 	]

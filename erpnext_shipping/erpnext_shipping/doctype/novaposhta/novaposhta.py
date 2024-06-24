@@ -11,11 +11,9 @@ from frappe import _
 
 from frappe.model.document import Document
 from frappe.utils import flt
-from frappe.utils.password import get_decrypted_password
 from requests import post
 
 from erpnext_shipping.erpnext_shipping.doctype.novaposhta.np_client import NovaPoshtaApi
-
 
 from frappe import whitelist
 
@@ -26,9 +24,9 @@ from frappe import enqueue
 import schedule
 
 
-def test_function1():
-    np = frappe.get_single("NovaPoshta")
-    np.get_waybill(None)
+# def test_function1():
+#     np = frappe.get_single("NovaPoshta")
+#     np.get_waybill(None)
     
 
 NOVAPOSHTA_PROVIDER = "NovaPoshta"
@@ -96,7 +94,6 @@ class NovaPoshta(Document):
         limit = 500
 
         while True:
-            # Оновлення методу з урахуванням пагінації
             warehouses = client.address.get_warehouses(page=page, limit=limit)
             warehouses_data = warehouses.json().get('data', [])
 
@@ -104,10 +101,9 @@ class NovaPoshta(Document):
                 break
 
             for warehouse in warehouses_data:
-                # Перевірка існування міста перед створенням складу
                 exist_city = frappe.db.exists({'doctype': 'NovaPoshta cities', 'ref': warehouse.get('CityRef')})
                 if not exist_city:
-                    continue  # Пропустити склад, якщо місто не знайдено
+                    continue 
 
                 exist = frappe.db.exists({'doctype': 'NovaPoshta Warehouse', 'ref': warehouse.get('Ref')})
                 if exist:
@@ -146,70 +142,67 @@ class NovaPoshta(Document):
         date_to = f"31.12.{current_year}"
         api_key = get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
         
-        total_records = 2000  # Assuming you know the total number of records for pagination
+        all_waybills = []  
         
-        total_pages = math.ceil(total_records / 500)  # Отримуємо загальну кількість сторінок
-        
-        all_waybills = []  # Список для зберігання всіх накладних
-        
-        for page_number in range(1, total_pages + 1):
-            data = {
-                "apiKey": api_key,
-                "modelName": "InternetDocument",
-                "calledMethod": "getDocumentList",
-                "methodProperties": {
-                    "DateTimeFrom": date_from,
-                    "DateTimeTo": date_to,
-                    "Page": str(page_number),  # Встановлюємо номер сторінки
-                    "GetFullList": "1",
-                    "DateTime": now.strftime("%d.%m.%Y"),
+        def fetch_waybills(document_type):
+            total_records = 2000  
+            total_pages = math.ceil(total_records / 500)  
+            
+            for page_number in range(1, total_pages + 1):
+                data = {
+                    "apiKey": api_key,
+                    "modelName": "InternetDocument",
+                    "calledMethod": "getDocumentList",
+                    "methodProperties": {
+                        "DateTimeFrom": date_from,
+                        "DateTimeTo": date_to,
+                        "Page": str(page_number),
+                        "GetFullList": "1",
+                        "DateTime": now.strftime("%d.%m.%Y"),
+                        "DocumentType": document_type
+                    }
                 }
-            }
 
-            response = requests.post("https://api.novaposhta.ua/v2.0/json/", json=data)
+                response = requests.post("https://api.novaposhta.ua/v2.0/json/", json=data)
 
-            if response.status_code == 200:
-                result = response.json()
-                waybill_list = result.get("data", [])
+                if response.status_code == 200:
+                    result = response.json()
+                    waybill_list = result.get("data", [])
 
-                for waybill_data in waybill_list:
-                    if frappe.db.exists('NovaPoshta Waybill', {'tracking_number': waybill_data.get("IntDocNumber")}):
-                        continue
+                    for waybill_data in waybill_list:
+                        if frappe.db.exists('NovaPoshta Waybill', {'tracking_number': waybill_data.get("IntDocNumber")}):
+                            continue
 
-                    waybill_doc = frappe.new_doc("NovaPoshta Waybill")
-                    waybill_doc.update({
-                        "tracking_number": waybill_data.get("IntDocNumber"),
-                        "senders_name": waybill_data.get("SenderContactPerson"),
-                        "senders_address": waybill_data.get("SenderAddressDescription"),
-                        "receivers_name": waybill_data.get("RecipientContactPerson"),
-                        "receivers_address": waybill_data.get("RecipientAddressDescription"),
-                        "item_description": waybill_data.get("Description"),
-                        "quantity": waybill_data.get("CargoType"),
-                        "weight": waybill_data.get("Weight"),
-                        "redelivery_option": waybill_data.get("ServiceType"),
-                        "amended_from": waybill_data.get("DocumentType"),
-                        "payment_control": waybill_data.get("AfterpaymentOnGoodsCost"),
-                        "backward_delivery": waybill_data.get("BackwardDeliveryMoney"),
-                        "status_novaposhta": waybill_data.get("StateName")[:140],
-                        "waybill_is_created": waybill_data.get("CreateTime"),
-                        "waybill_was_closed": waybill_data.get("DateLastUpdatedStatus"),
-                    })
-                    waybill_doc.insert()
-                    all_waybills.append(waybill_doc)  # Додаємо накладну до загального списку
-                    
+                        waybill_doc = frappe.new_doc("NovaPoshta Waybill")
+                        waybill_doc.update({
+                            "tracking_number": waybill_data.get("IntDocNumber"),
+                            "senders_name": waybill_data.get("SenderContactPerson"),
+                            "senders_address": waybill_data.get("SenderAddressDescription"),
+                            "receivers_name": waybill_data.get("RecipientContactPerson"),
+                            "receivers_address": waybill_data.get("RecipientAddressDescription"),
+                            "item_description": waybill_data.get("Description"),
+                            "quantity": waybill_data.get("CargoType"),
+                            "weight": waybill_data.get("Weight"),
+                            "redelivery_option": waybill_data.get("ServiceType"),
+                            "amended_from": waybill_data.get("DocumentType"),
+                            "payment_control": waybill_data.get("AfterpaymentOnGoodsCost"),
+                            "backward_delivery": waybill_data.get("BackwardDeliveryMoney"),
+                            "status_novaposhta": waybill_data.get("StateName")[:140],
+                            "waybill_is_created": waybill_data.get("CreateTime"),
+                            "waybill_was_closed": waybill_data.get("DateLastUpdatedStatus"),
+                        })
+                        waybill_doc.insert()
+                        all_waybills.append(waybill_doc)  
+
+        fetch_waybills("Order")
         
-        # self.update_waybills()/
+        fetch_waybills("OrderResponse")
         
         return all_waybills
         
     def update_waybills(self):
-        # Get the decrypted API key
         api_key = get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
-        
-        # Call the get_waybill method with the API key
         self.get_waybill(api_key)
-
-        # Schedule the get_waybill method to run every minute
         schedule.every(1).minutes.do(lambda: self.get_waybill(api_key))
     
     @whitelist()
@@ -299,7 +292,7 @@ class NovaPoshtaUtils:
             weight=weight,
             cost=value_of_goods,
             seats_amount="1",
-            pack_count="1", # TODO implement getting data from form
+            pack_count="1", # TODO 
         )
         
         data = delivery_price_data.get("data", [])
@@ -464,7 +457,7 @@ class NovaPoshtaUtils:
         pickup_counterparty_ref = sender['data'][0]['Ref']
         sender_EDRPOU = sender['data'][0].get('EDRPOU')
         sender_type = 'legal' if sender_EDRPOU else 'private'
-
+        
         recipient = self.get_recipient_counterparty()
         delivery_counterparty_ref = recipient['data'][0]['Ref']
         recipient_EDRPOU = recipient['data'][0].get('EDRPOU')
@@ -721,17 +714,12 @@ class NovaPoshtaUtils:
 def get_label(waybill_number):
     api_key = get_decrypted_password("NovaPoshta", "NovaPoshta", "api_key")
     api_endpoint = 'https://my.novaposhta.ua/orders/printMarking100x100'
-
     html_print_url = f'{api_endpoint}/orders/printMarking100x100/orders[]/{waybill_number}/type/html/apiKey/{api_key}/zebra'
-
-    # Виконання запиту GET для отримання HTML етикетки
     response = requests.get(html_print_url)
 
     if response.status_code == 200:
-        # Повертається HTML код етикетки
         return response.content.decode('utf-8')
     else:
-        # У випадку невдалого запиту, викидається виключення
         response.raise_for_status()
         
 @frappe.whitelist() 

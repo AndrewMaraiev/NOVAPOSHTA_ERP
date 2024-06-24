@@ -2,6 +2,7 @@
  {
   "docstatus": 0,
   "doctype": "Shipment Providers",
+  "modified": "2024-04-24 16:29:19.723195",
   "name": "nova_poshta",
   "provider_id": "nova_poshta",
   "provider_name": "Nova Poshta"
@@ -9,6 +10,7 @@
  {
   "docstatus": 0,
   "doctype": "Shipment Providers",
+  "modified": "2024-04-24 16:29:19.732051",
   "name": "pickup",
   "provider_id": "pickup",
   "provider_name": "Pickup"
@@ -16,6 +18,7 @@
  {
   "docstatus": 0,
   "doctype": "Shipment Providers",
+  "modified": "2024-04-24 16:29:19.740226",
   "name": "ukrposhta",
   "provider_id": "ukrposhta",
   "provider_name": "Ukrposhta"

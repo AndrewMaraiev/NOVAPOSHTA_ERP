@@ -6,7 +6,15 @@
  "engine": "InnoDB",
  "field_order": [
   "enabled",
-  "api_key"
+  "sand_bearer_token",
+  "sand_counterparty_token",
+  "prodaction_bearer_status_tracking",
+  "get_regions",
+  "get_districts",
+  "get_cities",
+  "get_postal_codes",
+  "get_warehouses",
+  "get_streets"
  ],
  "fields": [
   {
@@ -18,17 +26,58 @@
    "reqd": 1
   },
   {
-   "fieldname": "api_key",
+   "fieldname": "sand_bearer_token",
    "fieldtype": "Password",
    "in_list_view": 1,
-   "label": "API Key",
-   "read_only_depends_on": "eval:doc.enabled == 0",
+   "label": "Sandbox Bearer Token",
    "reqd": 1
+  },
+  {
+   "fieldname": "sand_counterparty_token",
+   "fieldtype": "Password",
+   "in_list_view": 1,
+   "label": "Sandbox Counterparty Token",
+   "reqd": 1
+  },
+  {
+   "fieldname": "get_districts",
+   "fieldtype": "Button",
+   "label": "Get districts"
+  },
+  {
+   "fieldname": "get_cities",
+   "fieldtype": "Button",
+   "label": "Get cities"
+  },
+  {
+   "fieldname": "get_streets",
+   "fieldtype": "Button",
+   "label": "Get streets"
+  },
+  {
+   "fieldname": "get_postal_codes",
+   "fieldtype": "Button",
+   "label": "Get postal codes"
+  },
+  {
+   "fieldname": "get_warehouses",
+   "fieldtype": "Button",
+   "label": "Get warehouses"
+  },
+  {
+   "fieldname": "get_regions",
+   "fieldtype": "Button",
+   "label": "Get regions"
+  },
+  {
+   "fieldname": "prodaction_bearer_status_tracking",
+   "fieldtype": "Password",
+   "label": "Prodaction Bearer Status Tracking"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2024-04-09 11:55:08.374171",
+ "modified": "2024-06-13 15:47:10.404985",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "Ukrposhta",
