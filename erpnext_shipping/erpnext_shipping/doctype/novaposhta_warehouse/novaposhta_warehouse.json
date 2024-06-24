@@ -59,7 +59,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-10 13:07:56.123578",
+ "modified": "2024-04-30 15:10:03.802281",
  "modified_by": "Administrator",
  "module": "ERPNext Shipping",
  "name": "NovaPoshta Warehouse",
@@ -77,6 +77,10 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Customer"
   }
  ],
  "show_title_field_in_link": 1,
